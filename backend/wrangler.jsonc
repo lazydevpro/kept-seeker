@@ -1,6 +1,10 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "neon-reserve-api",
+  // KEPT for Seeker's own Cloudflare account. Pinned so nothing in this repo can deploy to the
+  // original KEPT's account, whichever login is active (the "kept-seeker" wrangler profile is
+  // bound to this folder).
+  "account_id": "1e74ec5c350b589196e5aab17edd582a",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-18",
   "compatibility_flags": ["nodejs_compat"],
