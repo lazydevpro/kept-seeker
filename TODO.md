@@ -6,6 +6,8 @@ Spec: [docs/design/kept-design-system.md](docs/design/kept-design-system.md)
 
 Sources: dApp Store Terms of Use, Publisher Policy, Developer Agreement, docs.solanamobile.com.
 
+- [x] 1.1.1 published (crypto first, no private markets, onboarding invite + rings, loading
+      spinner); API on terms 3 with migration 0012; site redeployed and its download link → 200 #store
 - [ ] Device pass on a phone with real money (SOL, a stock, sell, reinstall → restore, widget,
       invite link opens the app) — nothing wallet-side has run on a phone on this stack #verify
 - [ ] **Decide: tokenized stocks in the store build.** ToS §5.4.16 bars using the store to
