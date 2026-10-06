@@ -4,12 +4,12 @@
  */
 
 /** The site's own origin. Absolute URLs in metadata, the sitemap and the OG image need it. */
-export const SITE_URL = 'https://keptapp.pages.dev'
+export const SITE_URL = 'https://kept-seeker.pages.dev'
 
 /** The production Worker. Only the public invite preview is called from here. */
-export const API_URL = 'https://kept-api.lazydevpro.workers.dev'
+export const API_URL = 'https://kept-seeker-api.lazydevpro.workers.dev'
 
-export const SOURCE_URL = 'https://github.com/lazydevpro/kept'
+export const SOURCE_URL = 'https://github.com/lazydevpro/kept-seeker'
 
 /**
  * The Solana dApp Store listing, once there is one. While it is null, every "get the app"
@@ -26,12 +26,12 @@ export const DAPP_STORE_URL: string | null = null
  * new APK is published (`mobile/npm run release:apk`, then `gh release create`).
  */
 export const BETA = {
-  version: '1.0.1',
-  apkUrl: 'https://github.com/lazydevpro/kept/releases/download/v1.0.1/kept-1.0.1.apk',
-  releaseUrl: 'https://github.com/lazydevpro/kept/releases/tag/v1.0.1',
+  version: '1.1.0',
+  apkUrl: 'https://github.com/lazydevpro/kept-seeker/releases/download/v1.1.0/kept-1.1.0.apk',
+  releaseUrl: 'https://github.com/lazydevpro/kept-seeker/releases/tag/v1.1.0',
   sizeMb: 81,
   minAndroid: '7.0',
 } as const
 
 /** The app's custom scheme, for "Open in KEPT" on the invite page. */
-export const APP_SCHEME = 'neonreserve'
+export const APP_SCHEME = 'keptseeker'

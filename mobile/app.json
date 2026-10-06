@@ -1,15 +1,15 @@
 {
   "expo": {
     "name": "KEPT",
-    "slug": "neon-reserve",
-    "version": "1.0.1",
+    "slug": "kept-seeker",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "neonreserve",
+    "scheme": "keptseeker",
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "associatedDomains": ["applinks:keptapp.pages.dev", "applinks:neon-reserve-web.lazydevpro.workers.dev"]
+      "associatedDomains": ["applinks:kept-seeker.pages.dev", "applinks:kept-seeker-web.lazydevpro.workers.dev"]
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +19,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.lazydevpro.neonreserve",
+      "package": "com.lazydevpro.keptseeker",
       "intentFilters": [
         {
           "action": "VIEW",
@@ -27,7 +27,7 @@
           "data": [
             {
               "scheme": "https",
-              "host": "keptapp.pages.dev",
+              "host": "kept-seeker.pages.dev",
               "pathPrefix": "/join"
             }
           ],
@@ -39,7 +39,7 @@
           "data": [
             {
               "scheme": "https",
-              "host": "neon-reserve-web.lazydevpro.workers.dev",
+              "host": "kept-seeker-web.lazydevpro.workers.dev",
               "pathPrefix": "/join"
             }
           ],
@@ -51,7 +51,7 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
       ],
-      "versionCode": 2
+      "versionCode": 1
     },
     "web": {
       "output": "static",
@@ -83,9 +83,7 @@
     },
     "extra": {
       "router": {},
-      "eas": {
-        "projectId": "67f32a87-806d-4a40-9b29-656c6313e552"
-      }
+      "eas": {}
     },
     "owner": "lazydevpro"
   }

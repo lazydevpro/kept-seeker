@@ -8,7 +8,7 @@ import {
 import { Platform } from 'react-native'
 
 /** The public site: invites land here, and it hosts the terms and privacy policy. */
-const SITE_URL = process.env.EXPO_PUBLIC_SITE_URL ?? 'https://keptapp.pages.dev'
+const SITE_URL = process.env.EXPO_PUBLIC_SITE_URL ?? 'https://kept-seeker.pages.dev'
 
 export class AppConfig {
   static siteUrl = SITE_URL

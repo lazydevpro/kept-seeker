@@ -500,7 +500,7 @@ export function End({ beat, spb }: Clock) {
           opacity: cta,
         }}
       >
-        keptapp.pages.dev
+        kept-seeker.pages.dev
       </div>
       <div
         style={{

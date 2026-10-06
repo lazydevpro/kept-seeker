@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 /**
  * Where an invite link lands when the app does not open it.
  *
- * Invites are `https://keptapp.pages.dev/join/<token>`. On an Android phone with KEPT
+ * Invites are `https://kept-seeker.pages.dev/join/<token>`. On an Android phone with KEPT
  * installed and App Links verified, the link opens the app directly and nobody sees this. Everyone
  * else — no app yet, a desktop, a link previewer — gets this page: whose circle it is, a button
  * that hands the token to the app, and a way to get the app.

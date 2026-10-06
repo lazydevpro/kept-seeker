@@ -154,7 +154,7 @@ const SLIDES: ReactNode[] = [
       </p>
       <p className={styles.titleSub}>Invest a little every week, with people who notice.</p>
     </div>
-    <p className={styles.titleFoot}>Android beta · live on Solana mainnet · keptapp.pages.dev</p>
+    <p className={styles.titleFoot}>Android beta · live on Solana mainnet · kept-seeker.pages.dev</p>
   </Slide>,
 
   // 2 · Problem
@@ -459,7 +459,7 @@ const SLIDES: ReactNode[] = [
             <b>Live on Solana mainnet</b> — real money, real assets.
           </li>
           <li>
-            <b>Android beta 1.0.1</b>, from keptapp.pages.dev.
+            <b>Android beta 1.0.1</b>, from kept-seeker.pages.dev.
           </li>
           <li>
             <b>Production API</b> on Cloudflare, reading every purchase back from the chain.
@@ -781,7 +781,7 @@ This signature does not authorize a transaction.`}</pre>
       <Rings size={180} promise={1} goal={1} circle={1} mode="dark" label="" />
       <div>
         <p className={styles.closeWord}>KEPT</p>
-        <p className={styles.closeSub}>keptapp.pages.dev · github.com/lazydevpro/kept</p>
+        <p className={styles.closeSub}>kept-seeker.pages.dev · github.com/lazydevpro/kept-seeker</p>
       </div>
     </div>
   </Slide>,

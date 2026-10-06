@@ -531,7 +531,7 @@ export function SceneClose({ tone, size }: SceneProps) {
             color: lightColors.kiwiDeep,
           }}
         >
-          keptapp.pages.dev
+          kept-seeker.pages.dev
         </p>
       </AbsoluteFill>
     </AbsoluteFill>

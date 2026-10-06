@@ -9,7 +9,7 @@
   "observability": { "enabled": true },
   "vars": {
     "ENVIRONMENT": "local",
-    "APP_ORIGIN": "neonreserve://",
+    "APP_ORIGIN": "keptseeker://",
     "SOLANA_CLUSTER": "devnet",
     "SOLANA_RPC_URL": "https://api.devnet.solana.com",
     "PUBLIC_APP_URL": "http://127.0.0.1:8082",
@@ -50,17 +50,17 @@
   "triggers": { "crons": ["*/5 * * * *"] },
   "env": {
     "staging": {
-      "name": "neon-reserve-api-staging",
+      "name": "kept-seeker-api-staging",
       "workers_dev": true,
       "preview_urls": true,
       "vars": {
         "ENVIRONMENT": "staging",
-        "APP_ORIGIN": "https://neon-reserve-web.lazydevpro.workers.dev",
-        "PUBLIC_APP_URL": "https://neon-reserve-web.lazydevpro.workers.dev",
+        "APP_ORIGIN": "https://kept-seeker-web.lazydevpro.workers.dev",
+        "PUBLIC_APP_URL": "https://kept-seeker-web.lazydevpro.workers.dev",
         "SOLANA_CLUSTER": "devnet",
         "SOLANA_RPC_URL": "https://api.devnet.solana.com"
       },
-      "d1_databases": [{ "binding": "DB", "database_name": "neon-reserve-staging" }],
+      "d1_databases": [{ "binding": "DB", "database_name": "kept-seeker-staging" }],
       "durable_objects": {
         "bindings": [
           { "name": "CIRCLE_ROOMS", "class_name": "CircleRoom" },
@@ -68,8 +68,8 @@
         ]
       },
       "queues": {
-        "producers": [{ "binding": "JOBS", "queue": "neon-reserve-jobs-staging" }],
-        "consumers": [{ "queue": "neon-reserve-jobs-staging", "max_batch_size": 10, "max_batch_timeout": 5, "max_retries": 10 }]
+        "producers": [{ "binding": "JOBS", "queue": "kept-seeker-jobs-staging" }],
+        "consumers": [{ "queue": "kept-seeker-jobs-staging", "max_batch_size": 10, "max_batch_timeout": 5, "max_retries": 10 }]
       }
     },
     // Mainnet. New resources, so they carry the product's name rather than the
@@ -83,17 +83,17 @@
     //                       the getTransaction calls verification depends on
     //   EXPO_ACCESS_TOKEN   optional, for push
     "production": {
-      "name": "kept-api",
+      "name": "kept-seeker-api",
       "workers_dev": true,
       "preview_urls": false,
       "vars": {
         "ENVIRONMENT": "production",
-        "APP_ORIGIN": "https://keptapp.pages.dev",
-        "PUBLIC_APP_URL": "https://keptapp.pages.dev",
+        "APP_ORIGIN": "https://kept-seeker.pages.dev",
+        "PUBLIC_APP_URL": "https://kept-seeker.pages.dev",
         "SOLANA_CLUSTER": "mainnet-beta",
         "SOLANA_RPC_URL": "https://api.mainnet-beta.solana.com"
       },
-      "d1_databases": [{ "binding": "DB", "database_name": "kept-production" }],
+      "d1_databases": [{ "binding": "DB", "database_name": "kept-seeker-production" }],
       "durable_objects": {
         "bindings": [
           { "name": "CIRCLE_ROOMS", "class_name": "CircleRoom" },
@@ -101,8 +101,8 @@
         ]
       },
       "queues": {
-        "producers": [{ "binding": "JOBS", "queue": "kept-jobs" }],
-        "consumers": [{ "queue": "kept-jobs", "max_batch_size": 10, "max_batch_timeout": 5, "max_retries": 10 }]
+        "producers": [{ "binding": "JOBS", "queue": "kept-seeker-jobs" }],
+        "consumers": [{ "queue": "kept-seeker-jobs", "max_batch_size": 10, "max_batch_timeout": 5, "max_retries": 10 }]
       }
     }
   }

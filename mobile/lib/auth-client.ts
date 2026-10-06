@@ -34,8 +34,8 @@ export const authClient = createAuthClient({
   plugins: [
     anonymousClient(),
     expoClient({
-      scheme: 'neonreserve',
-      storagePrefix: 'neon-reserve',
+      scheme: 'keptseeker',
+      storagePrefix: 'kept-seeker',
       cookiePrefix: 'better-auth',
       storage: Platform.OS === 'web' ? webStorage : SecureStore,
     }),

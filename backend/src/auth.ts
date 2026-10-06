@@ -47,7 +47,7 @@ export function createAuth(env: AppEnv, requestUrl: string) {
     session: { expiresIn: 60 * 60 * 24 * 365, updateAge: 60 * 60 * 24 },
     trustedOrigins: [
       env.APP_ORIGIN,
-      "neonreserve://",
+      "keptseeker://",
       "exp://",
       // Local-only: lets the Expo web export sign in against `wrangler dev`.
       ...(String(env.ENVIRONMENT) === "local"

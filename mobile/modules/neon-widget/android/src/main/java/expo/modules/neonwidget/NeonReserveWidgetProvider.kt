@@ -38,7 +38,7 @@ class NeonReserveWidgetProvider : AppWidgetProvider() {
             prefs.getFloat("circle", 0.58f),
           ),
         )
-        val launchIntent = Intent(Intent.ACTION_VIEW, Uri.parse("neonreserve://")).apply {
+        val launchIntent = Intent(Intent.ACTION_VIEW, Uri.parse("keptseeker://")).apply {
           flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         views.setOnClickPendingIntent(

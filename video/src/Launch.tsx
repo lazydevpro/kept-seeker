@@ -289,7 +289,7 @@ function EndCard({ size }: { size: number }) {
           color: lightColors.kiwi,
         }}
       >
-        keptapp.pages.dev
+        kept-seeker.pages.dev
       </p>
     </AbsoluteFill>
   )

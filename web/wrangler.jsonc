@@ -17,11 +17,11 @@
    *
    * The `name` here IS the subdomain. Renaming it moves the site.
    */
-  "name": "keptapp",
+  "name": "kept-seeker",
   "compatibility_date": "2026-08-18",
   "pages_build_output_dir": "./out",
 
   // Per-address send counts for `functions/api/contact.ts`. The id names a namespace, it is
   // not a credential.
-  "kv_namespaces": [{ "binding": "CONTACT_LIMITS", "id": "9d7c9c5a570647108da13fe905e0c972" }],
+  "kv_namespaces": [{ "binding": "CONTACT_LIMITS", "id": "93264f01e21a40f69fd8ed9aabdc6670" }],
 }

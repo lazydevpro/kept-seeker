@@ -247,7 +247,7 @@ circleRoutes.post("/:circleId/invites", async (c) => {
     {
       invite: {
         id: inviteId,
-        deepLink: `neonreserve://join/${token}`,
+        deepLink: `keptseeker://join/${token}`,
         webUrl: `${c.env.PUBLIC_APP_URL.replace(/\/$/, "")}/join/${token}`,
         expiresAt,
       },

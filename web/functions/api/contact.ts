@@ -120,7 +120,7 @@ export const onRequest = async ({ request, env }: RouteContext): Promise<Respons
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
-      username: 'KEPT — keptapp.pages.dev',
+      username: 'KEPT — kept-seeker.pages.dev',
       /*
        * Nothing in a submission may ping anyone. Without this, a message containing
        * `@everyone` notifies the whole server — the form would be a free megaphone. Stripping

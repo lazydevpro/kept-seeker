@@ -9,7 +9,7 @@
       "distribution": "internal",
       "android": { "buildType": "apk" },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://neon-reserve-api-staging.lazydevpro.workers.dev",
+        "EXPO_PUBLIC_API_URL": "https://kept-seeker-api-staging.lazydevpro.workers.dev",
         "EXPO_PUBLIC_SOLANA_CLUSTER": "devnet"
       }
     },
@@ -17,7 +17,7 @@
       "distribution": "internal",
       "android": { "buildType": "apk" },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://neon-reserve-api-staging.lazydevpro.workers.dev",
+        "EXPO_PUBLIC_API_URL": "https://kept-seeker-api-staging.lazydevpro.workers.dev",
         "EXPO_PUBLIC_SOLANA_CLUSTER": "devnet"
       }
     },
@@ -25,9 +25,9 @@
       "autoIncrement": true,
       "android": { "buildType": "apk" },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://kept-api.lazydevpro.workers.dev",
+        "EXPO_PUBLIC_API_URL": "https://kept-seeker-api.lazydevpro.workers.dev",
         "EXPO_PUBLIC_SOLANA_CLUSTER": "mainnet-beta",
-        "EXPO_PUBLIC_SITE_URL": "https://keptapp.pages.dev"
+        "EXPO_PUBLIC_SITE_URL": "https://kept-seeker.pages.dev"
       }
     }
   },

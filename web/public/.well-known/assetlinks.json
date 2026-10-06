@@ -3,7 +3,7 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.lazydevpro.neonreserve",
+      "package_name": "com.lazydevpro.keptseeker",
       "sha256_cert_fingerprints": [
         "C0:89:B1:E0:A5:7C:6D:7F:4C:C0:63:F1:65:F7:DC:0B:F5:29:49:5A:6B:73:9A:4E:F9:33:CC:05:A6:EA:59:10"
       ]

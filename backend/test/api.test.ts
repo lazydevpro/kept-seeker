@@ -36,7 +36,7 @@ describe("Neon Reserve API", () => {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          origin: "neonreserve://",
+          origin: "keptseeker://",
         },
         body: "{}",
       },
@@ -61,7 +61,7 @@ describe("Neon Reserve API", () => {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          origin: "neonreserve://",
+          origin: "keptseeker://",
         },
         body: "{}",
       },
@@ -103,7 +103,7 @@ describe("Neon Reserve API", () => {
           method: "POST",
           headers: {
             "content-type": "application/json",
-            origin: "neonreserve://",
+            origin: "keptseeker://",
           },
           body: "{}",
         },
@@ -178,7 +178,7 @@ describe("Neon Reserve API", () => {
           method: "POST",
           headers: {
             "content-type": "application/json",
-            origin: "neonreserve://",
+            origin: "keptseeker://",
           },
           body: "{}",
         },
@@ -259,7 +259,7 @@ describe("Neon Reserve API", () => {
           method: "POST",
           headers: {
             "content-type": "application/json",
-            origin: "neonreserve://",
+            origin: "keptseeker://",
           },
           body: "{}",
         },
@@ -384,7 +384,7 @@ describe("Neon Reserve API", () => {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          origin: "neonreserve://",
+          origin: "keptseeker://",
         },
         body: "{}",
       },
@@ -438,7 +438,7 @@ describe("Neon Reserve API", () => {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          origin: "neonreserve://",
+          origin: "keptseeker://",
         },
         body: "{}",
       },
@@ -499,7 +499,7 @@ describe("Neon Reserve API", () => {
           method: "POST",
           headers: {
             "content-type": "application/json",
-            origin: "neonreserve://",
+            origin: "keptseeker://",
           },
           body: "{}",
         },
@@ -583,7 +583,7 @@ describe("Neon Reserve API", () => {
           method: "POST",
           headers: {
             "content-type": "application/json",
-            origin: "neonreserve://",
+            origin: "keptseeker://",
           },
           body: "{}",
         },
@@ -829,7 +829,7 @@ describe("Launch readiness", () => {
         method: "POST",
         headers: {
           "content-type": "application/json",
-          origin: "neonreserve://",
+          origin: "keptseeker://",
         },
         body: "{}",
       },
@@ -842,7 +842,7 @@ describe("Launch readiness", () => {
       ...init,
       headers: {
         "content-type": "application/json",
-        origin: "neonreserve://",
+        origin: "keptseeker://",
         cookie,
         ...(init.headers ?? {}),
       },

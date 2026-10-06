@@ -44,7 +44,7 @@ app.use("*", async (c, next) => {
 
 app.get("/", (c) =>
   c.json({
-    service: "neon-reserve-api",
+    service: "kept-seeker-api",
     status: "ok",
     environment: c.env.ENVIRONMENT,
   }),

@@ -234,7 +234,7 @@ export function useShareInvite(circleId?: string) {
       //
       // Only the https link is sent. It is an Android App Link, so on a phone that has KEPT
       // it opens the join screen directly, and on one that does not it opens the web page
-      // rather than failing silently the way a bare `neonreserve://` link would.
+      // rather than failing silently the way a bare `keptseeker://` link would.
       await Share.share({
         title: 'Join my circle on KEPT',
         message: [
