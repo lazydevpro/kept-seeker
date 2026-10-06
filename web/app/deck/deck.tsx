@@ -341,6 +341,9 @@ const SLIDES: ReactNode[] = [
             priced live.
           </li>
           <li>
+            <b>Crypto,</b> new for Seeker: SOL, bitcoin as Coinbase’s cbBTC, and SKR, Solana Mobile’s own.
+          </li>
+          <li>
             <b>Private markets</b> through Tessera — OpenAI, SpaceX, Kalshi — marked <i>Private</i>, behind a
             disclosure you accept first.
           </li>
@@ -459,7 +462,7 @@ const SLIDES: ReactNode[] = [
             <b>Live on Solana mainnet</b> — real money, real assets.
           </li>
           <li>
-            <b>Android beta 1.0.1</b>, from kept-seeker.pages.dev.
+            <b>Android 1.1.0, the Seeker edition</b>, from kept-seeker.pages.dev.
           </li>
           <li>
             <b>Production API</b> on Cloudflare, reading every purchase back from the chain.
@@ -541,6 +544,9 @@ const SLIDES: ReactNode[] = [
         <Box title="Jupiter">Swap orders and execution, live prices, charts.</Box>
         <Box title="xStocks">1,100+ tokenized stocks and ETFs. The catalogue is cached for an hour.</Box>
         <Box title="Tessera">Private markets, with an offline fallback so the lane never empties.</Box>
+        <Box title="Crypto">
+          SOL, cbBTC and SKR. SOL arrives as lamports, so it is verified from the wallet’s balance.
+        </Box>
         <Box title="Solana RPC">Mainnet, through a private endpoint. The source of truth.</Box>
         <Box title="Expo Push">Reminders and nudges, through FCM.</Box>
       </div>
@@ -705,7 +711,7 @@ This signature does not authorize a transaction.`}</pre>
       </div>
     </div>
     <p className={styles.stack}>
-      36 API tests in the Workers runtime · CI on the app, the API and the site · 43 routes · 19 tables · 11
+      42 API tests in the Workers runtime · CI on the app, the API and the site · 43 routes · 19 tables · 11
       migrations · one cron
     </p>
   </Slide>,
