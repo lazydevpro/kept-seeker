@@ -9,7 +9,7 @@
  */
 
 import { spawnSync } from 'node:child_process'
-import { mkdirSync } from 'node:fs'
+import { mkdirSync, renameSync } from 'node:fs'
 
 const CUTS = [
   // "Next week" — the product video. Needs `npm run score` first for its audio.
@@ -57,6 +57,10 @@ for (const cut of wanted) {
       'bt709',
       '--log',
       'error',
+      // A frame that waits on a seek past 30 s fails the whole render; under load this happened
+      // at frame 204 of "Next week" with nothing wrong in the film.
+      '--timeout',
+      '120000',
     ],
     { stdio: 'inherit' },
   )
@@ -64,6 +68,42 @@ for (const cut of wanted) {
     console.error(`\n  ${cut.id} failed.`)
     process.exit(result.status ?? 1)
   }
+  limit(cut.out)
+}
+
+/**
+ * The last step of the mix: a peak limiter at −1 dBFS on the finished file, picture copied
+ * untouched. Remotion only sums gains, and a sound effect landing on the music's downbeat
+ * (the sparkle on "Promise kept", +0.38 dBFS) clipped however the faders were set. The limiter
+ * only acts on the few transients over the ceiling; everything else passes through.
+ */
+function limit(file) {
+  const tmp = file.replace(/\.mp4$/, '.limited.mp4')
+  const run = spawnSync(
+    'ffmpeg',
+    [
+      '-y',
+      '-loglevel',
+      'error',
+      '-i',
+      file,
+      '-c:v',
+      'copy',
+      '-af',
+      'alimiter=limit=0.891:attack=1:release=60:level=false',
+      '-c:a',
+      'aac',
+      '-b:a',
+      '320k',
+      tmp,
+    ],
+    { stdio: 'inherit' },
+  )
+  if (run.status !== 0) {
+    console.error(`\n  Limiting ${file} failed.`)
+    process.exit(run.status ?? 1)
+  }
+  renameSync(tmp, file)
 }
 
 console.log('\n  Done.\n')

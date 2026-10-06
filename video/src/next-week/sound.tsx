@@ -55,8 +55,11 @@ export const HITS_LIST: Hit[] = [
   ...REEL.map((at) => ({ at, sfx: 'tick', volume: 0.32 })),
   { at: SECTION.buy, sfx: 'press', volume: 0.6 },
   { at: 78, sfx: 'bend', volume: 0.55 },
-  { at: SECTION.kept, sfx: 'cup', volume: 0.95 },
-  { at: SECTION.kept, sfx: 'sparkle', volume: 0.5 },
+  // The cup and the sparkle used to start on the same frame on the music's downbeat, the loudest
+  // instant in the film. The sparkle now follows by a tenth of a beat and the cup is softer; the
+  // limiter in scripts/render.mjs catches what is left (it measured +0.38 dBFS without it).
+  { at: SECTION.kept, sfx: 'cup', volume: 0.7 },
+  { at: SECTION.kept + 0.12, sfx: 'sparkle', volume: 0.45 },
   { at: CARD_LIFT, sfx: 'swoosh', volume: 0.4 },
   { at: CARD_SHED, sfx: 'shed', volume: 0.45 },
   { at: 94, sfx: 'swoosh', volume: 0.4 },
@@ -93,7 +96,8 @@ const ramp = (f: number, from: [number, number], to: [number, number]) =>
 /**
  * The whole mix, one fader: −1 dB. The hard stop and the three closing hits peaked just
  * over 0 dBFS on the chosen track; this keeps them under it without touching the balance.
- * (The Kept chime on the drop still touches 0 dBFS for under a millisecond.)
+ * The kept moment still crossed 0 dBFS at any fader setting, so the finished file goes through
+ * a −1 dBFS limiter (scripts/render.mjs).
  */
 const MASTER = 0.89
 
