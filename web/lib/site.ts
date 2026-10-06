@@ -7,7 +7,7 @@
 export const SITE_URL = 'https://kept-seeker.pages.dev'
 
 /** The production Worker. Only the public invite preview is called from here. */
-export const API_URL = 'https://kept-seeker-api.lazydevpro.workers.dev'
+export const API_URL = 'https://kept-seeker-api.keptseeker.workers.dev'
 
 export const SOURCE_URL = 'https://github.com/lazydevpro/kept-seeker'
 

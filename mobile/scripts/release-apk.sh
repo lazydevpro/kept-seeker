@@ -24,7 +24,7 @@ export JAVA_HOME ANDROID_HOME PATH="$JAVA_HOME/bin:$PATH"
 
 # EXPO_PUBLIC_* are inlined into the bundle at build time — must match eas.json.
 export NODE_ENV=production
-export EXPO_PUBLIC_API_URL=https://kept-seeker-api.lazydevpro.workers.dev
+export EXPO_PUBLIC_API_URL=https://kept-seeker-api.keptseeker.workers.dev
 export EXPO_PUBLIC_SOLANA_CLUSTER=mainnet-beta
 export EXPO_PUBLIC_SITE_URL=https://kept-seeker.pages.dev
 

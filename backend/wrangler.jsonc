@@ -59,8 +59,8 @@
       "preview_urls": true,
       "vars": {
         "ENVIRONMENT": "staging",
-        "APP_ORIGIN": "https://kept-seeker-web.lazydevpro.workers.dev",
-        "PUBLIC_APP_URL": "https://kept-seeker-web.lazydevpro.workers.dev",
+        "APP_ORIGIN": "https://kept-seeker-web.keptseeker.workers.dev",
+        "PUBLIC_APP_URL": "https://kept-seeker-web.keptseeker.workers.dev",
         "SOLANA_CLUSTER": "devnet",
         "SOLANA_RPC_URL": "https://api.devnet.solana.com"
       },

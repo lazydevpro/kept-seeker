@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "associatedDomains": ["applinks:kept-seeker.pages.dev", "applinks:kept-seeker-web.lazydevpro.workers.dev"]
+      "associatedDomains": ["applinks:kept-seeker.pages.dev", "applinks:kept-seeker-web.keptseeker.workers.dev"]
     },
     "android": {
       "adaptiveIcon": {
@@ -39,7 +39,7 @@
           "data": [
             {
               "scheme": "https",
-              "host": "kept-seeker-web.lazydevpro.workers.dev",
+              "host": "kept-seeker-web.keptseeker.workers.dev",
               "pathPrefix": "/join"
             }
           ],
