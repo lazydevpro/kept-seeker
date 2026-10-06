@@ -7,8 +7,14 @@ Spec: [docs/design/kept-design-system.md](docs/design/kept-design-system.md)
 Plan: [docs/plans/clock-in-submission.md](docs/plans/clock-in-submission.md). Own deadline: Thu 8 Oct, 22:00 IST.
 
 - [ ] Owner: register on Align (Radiants) and confirm the sign-up deadline #clockin
-- [ ] Commit and push the pending work (deck, film, demo mode, circle changes, tests) #clockin
-- [ ] Fresh-clone check: install, typecheck and tests in every workspace from a clean clone #verify
+- [x] New repo `lazydevpro/kept-seeker` (public, full history); pushes to the old `kept` repo
+      disabled locally while its review runs. Pending work committed and pushed #clockin
+- [x] A stack of its own: `kept-seeker-api` (+ D1 `kept-seeker-production`, queue
+      `kept-seeker-jobs`), `kept-seeker.pages.dev` (+ KV), app `com.lazydevpro.keptseeker` 1.1.0 #clockin
+- [ ] Owner: secrets (new Jupiter key, new RPC URL, auth secret), `deploy:production`, site deploy,
+      `eas init` + first production build (new keystore) — the deploy was refused to Claude #clockin
+- [ ] Put the new key's SHA-256 in `web/public/.well-known/assetlinks.json`, redeploy the site #web
+- [x] Fresh-clone check: CI on the new repo runs `npm ci` + every gate on a clean runner — green #verify
 - [ ] README: a Clock In block at the top (APK, video, deck, install, run locally) #clockin
 - [ ] Device pass on a phone with $1 real money (the open #verify item below) #verify
 - [ ] v1.0.2 APK from the submitted commit, if the app changed since v1.0.1 #mobile
@@ -16,7 +22,8 @@ Plan: [docs/plans/clock-in-submission.md](docs/plans/clock-in-submission.md). Ow
 - [ ] Deck pass against the four criteria; re-export `docs/kept-deck.pdf` #deck
 - [ ] Draft on Align, run the AI Coach, final submit #clockin
 - [ ] After a win: live on the Solana dApp Store by 10 Dec #launch
-- [ ] Decide: crypto shelf (SOL, cbBTC, SKR, maybe ETH) and "pay your promise in SKR" #clockin
+- [x] Crypto shelf: SOL, cbBTC, SKR; SOL verified from lamports; 42 backend tests #clockin
+- [ ] Stretch, decide Wed noon: "pay your promise in SKR" (SKR prize) #clockin
 - [ ] Colosseum World's Fair by 13 Oct 12:29 IST: register, presentation video (2–3 min),
       go-to-market plan, past-work disclosure; select India for the Superteam India track #clockin
 
