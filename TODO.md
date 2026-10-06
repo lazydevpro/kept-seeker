@@ -21,7 +21,8 @@ Plan: [docs/plans/clock-in-submission.md](docs/plans/clock-in-submission.md). Ow
       listened to by the owner. Rendered (video/out/kept-next-week-16x9-product-vo.mp4), limited
       to −0.9 dBFS peak at −13.9 LUFS #film
 - [x] Demo narration recorded (AI Studio), cut by `npm run narration`, listened to — good #film
-- [ ] Terms: §4 "The assets" covers xStocks and Tessera only; crypto needs the owner's wording #launch
+- [x] Terms version 2 (7 Oct): crypto in the summary, §3, §4 and §5; owner-approved, live on the
+      site and enforced by the API. Still not a lawyer's review (see Legal review below) #launch
 - [ ] Put the new key's SHA-256 in `web/public/.well-known/assetlinks.json`, redeploy the site #web
 - [x] Fresh-clone check: CI on the new repo runs `npm ci` + every gate on a clean runner — green #verify
 - [x] README: a Clock In block at the top (APK, video, deck, install, run locally) #clockin
