@@ -26,6 +26,7 @@ export type ProductFilmProps = {
 export const RESTING_QUOTES: Quote[] = EQUITIES.map((listing) => ({
   symbol: listing.symbol,
   name: listing.name,
+  kind: listing.kind,
   price: listing.capturedPrice,
   change24h: null,
   stale: true,
@@ -45,7 +46,8 @@ export const RESTING_QUOTES: Quote[] = EQUITIES.map((listing) => ({
 export const calculateProductMetadata: CalculateMetadataFunction<ProductFilmProps> = async ({
   props,
 }) => {
-  const quotes = await fetchQuotes()
+  // This film shows the stock shelf only; the site's ticker now carries crypto as well.
+  const quotes = (await fetchQuotes()).filter((quote) => quote.kind === 'stock')
   const fresh = quotes.some((quote) => !quote.stale)
   const asOf = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })
 

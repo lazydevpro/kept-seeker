@@ -516,8 +516,8 @@ export function End({ beat, spb }: Clock) {
           whiteSpace: 'nowrap',
         }}
       >
-        Tokenized stocks via xStocks. Private-market tokens via Tessera. Not available to U.S.
-        persons. Capital at risk.
+        Tokenized stocks via xStocks. Crypto routed by Jupiter. Private-market tokens via Tessera.
+        Not available to U.S. persons. Capital at risk.
       </div>
     </>
   )

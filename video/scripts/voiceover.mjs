@@ -5,6 +5,7 @@
  *   node scripts/voiceover.mjs --voice Algieba  # another prebuilt voice (its own folder)
  *   node scripts/voiceover.mjs --model gemini-3.8-flash-tts
  *   node scripts/voiceover.mjs --fresh          # a new take even if the script is unchanged
+ *   node scripts/voiceover.mjs --reuse-raw      # trust take-raw.wav as this script's take (recovery)
  *   node scripts/voiceover.mjs --preview        # macOS `say` instead: timing checks only
  *
  * The whole script goes to the voice in a SINGLE request. Lines generated one by one come back
@@ -123,6 +124,21 @@ function sayTake(file) {
 const rawFile = path.join(dir, 'take-raw.wav')
 const manifestFile = path.join(dir, 'take.json')
 const previous = existsSync(manifestFile) ? JSON.parse(readFileSync(manifestFile, 'utf8')) : null
+/*
+ * Which script the raw take was made from, written the moment the take lands. take.json is only
+ * written once the whole cut has passed, so on its own it could not vouch for a take whose
+ * listen failed — and every rerun after a busy listener asked the voice for a new take. On the
+ * free tier that is ten a day; five reruns spent half of them.
+ */
+const rawManifestFile = path.join(dir, 'take-raw.json')
+const rawManifest = existsSync(rawManifestFile)
+  ? JSON.parse(readFileSync(rawManifestFile, 'utf8'))
+  : null
+const recordRaw = (h, m) =>
+  writeFileSync(
+    rawManifestFile,
+    `${JSON.stringify({ hash: h, model: m, made: new Date().toISOString() }, null, 2)}\n`,
+  )
 
 let model = preview ? 'macos-say' : option('model')
 if (!preview && !model && previous?.model && !flag('fresh')) model = previous.model
@@ -135,7 +151,20 @@ const hashOf = (m) =>
     .slice(0, 16)
 
 let hash = model ? hashOf(model) : null
-if (!flag('fresh') && hash && previous?.hash === hash && existsSync(rawFile)) {
+if (flag('reuse-raw') && existsSync(rawFile)) {
+  // Recovery, by hand: a run died after the take was saved but before this script could vouch
+  // for it. Only for a take made from the current script.
+  if (!model) throw new Error('--reuse-raw needs --model, or a previous take.json to take it from.')
+  console.log(
+    `  Reusing ${path.relative(process.cwd(), rawFile)} as this script's take (--reuse-raw).`,
+  )
+  recordRaw(hash, model)
+} else if (
+  !flag('fresh') &&
+  hash &&
+  (previous?.hash === hash || rawManifest?.hash === hash) &&
+  existsSync(rawFile)
+) {
   console.log(
     `  Reusing the take in ${path.relative(process.cwd(), rawFile)} (same words, voice and model).`,
   )
@@ -167,6 +196,7 @@ if (!flag('fresh') && hash && previous?.hash === hash && existsSync(rawFile)) {
   if (!result) throw new Error('No TTS model on this key has quota left.')
   hash = hashOf(model)
   writeWav(rawFile, pcmToFloat(result.pcm), result.rate)
+  recordRaw(hash, model)
 }
 
 // ── Clean and level the take as a whole ──────────────────────────────────────────────────
@@ -281,7 +311,7 @@ if (inside.length < script.length - 1) {
   process.exit(1)
 }
 const byLength = [...inside].sort((x, y) => y.to - y.from - (x.to - x.from))
-const cuts = byLength.slice(0, script.length - 1).sort((x, y) => x.from - y.from)
+let cuts = byLength.slice(0, script.length - 1).sort((x, y) => x.from - y.from)
 const length = (g) => (g ? (g.to - g.from) / 100 : 0)
 const shortestJoin = Math.min(...cuts.map(length))
 const longestInside = length(byLength[script.length - 1])
@@ -312,8 +342,36 @@ if (heard) {
     said.reduce((s, x) => s + (x - mx) ** 2, 0)
   const worst = Math.max(...said.map((x, i) => Math.abs(my + slope * (x - mx) - found[i])))
   console.log(`  Joins against Gemini's timings: ${worst.toFixed(2)}s at worst, drift removed`)
-  if (worst > 0.8)
-    console.warn('  ⚠ A join is far from where Gemini heard it. Listen to the clips.')
+  if (worst > 0.8) {
+    /*
+     * The longest pauses are not the joins: in some takes a comma lasts as long as a full stop
+     * (0.37 s against 0.38 s once), and cutting by length alone gave a 0.18 s "Make one small
+     * promise." Gemini heard every line and where it changed, so each join snaps to the real
+     * pause nearest that change — the longest pause within half a second of it — and the
+     * audio, not Gemini's clock, still decides the exact cut.
+     */
+    const snapped = []
+    for (let i = 0; i < said.length; i++) {
+      const at = said[i] * 100
+      const after = snapped.at(-1)?.to ?? begin
+      const options = inside.filter(
+        (g) => g.from >= after && Math.abs((g.from + g.to) / 2 - at) <= 50,
+      )
+      const pick = options.length
+        ? options.reduce((x, y) => (y.to - y.from > x.to - x.from ? y : x))
+        : inside
+            .filter((g) => g.from >= after)
+            .reduce((x, y) =>
+              Math.abs((y.from + y.to) / 2 - at) < Math.abs((x.from + x.to) / 2 - at) ? y : x,
+            )
+      snapped.push(pick)
+    }
+    const off = Math.max(...snapped.map((g, i) => Math.abs((g.from + g.to) / 200 - said[i])))
+    console.warn(
+      `  ⚠ A join is far from where Gemini heard it — cutting at the pause nearest each heard join instead (${off.toFixed(2)}s at worst). Check the clips.`,
+    )
+    cuts = snapped
+  }
 }
 
 const LEAD = 0.03 // before the first word

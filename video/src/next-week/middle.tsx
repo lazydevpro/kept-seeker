@@ -356,22 +356,28 @@ export function PromiseWords({ beat }: Clock) {
 
 // ── Invest ───────────────────────────────────────────────────────────────────────────────
 
-const NAMES: { name: string; private?: boolean }[] = [
+/** The shelf, in the order the voice names it: stocks, then crypto, then the private names. */
+const NAMES: { name: string; chip?: 'Crypto' | 'Private' }[] = [
   { name: 'Tesla' },
   { name: 'Nvidia' },
   { name: 'S&P 500' },
   { name: 'Apple' },
-  { name: 'Gold' },
-  { name: 'OpenAI', private: true },
-  { name: 'SpaceX', private: true },
+  { name: 'Bitcoin', chip: 'Crypto' },
+  { name: 'Solana', chip: 'Crypto' },
+  { name: 'OpenAI', chip: 'Private' },
+  { name: 'SpaceX', chip: 'Private' },
 ]
+const CHIP = {
+  Crypto: { background: L.skyTint, color: L.skyDeep },
+  Private: { background: L.grapeTint, color: L.grapeDeep },
+}
 const PICK = NAMES.length - 1
 const ROW = 210
 
 /** The reel's position, in rows. Steady through the public names, then slowing onto the last. */
 function reelAt(beat: number) {
-  if (beat <= 69.5) return (beat - 62.5) / 1.5
-  const start = (69.5 - 62.5) / 1.5
+  if (beat <= 69.5) return (beat - 62.5) / 1.25
+  const start = (69.5 - 62.5) / 1.25
   const t = span(beat, 69.5, 73.5, (x) => 1 - (1 - x) * (1 - x))
   return lerp(start, PICK, t)
 }
@@ -504,7 +510,7 @@ export function Invest({ beat, spb }: Clock) {
               >
                 {item.name}
               </span>
-              {item.private && (
+              {item.chip && (
                 <span
                   style={{
                     fontFamily: SANS,
@@ -512,11 +518,10 @@ export function Invest({ beat, spb }: Clock) {
                     fontSize: 40,
                     padding: '12px 26px',
                     borderRadius: 40,
-                    background: L.grapeTint,
-                    color: L.grapeDeep,
+                    ...CHIP[item.chip],
                   }}
                 >
-                  Private
+                  {item.chip}
                 </span>
               )}
             </div>
@@ -538,7 +543,7 @@ export function InvestWords({ beat }: Clock) {
         out={68.5}
         y={120}
         size={60}
-        words={['It lets you buy real', { accent: 'stocks.' }]}
+        words={['It lets you buy real stocks and', { accent: 'crypto.' }]}
       />
       <Caption
         beat={beat}

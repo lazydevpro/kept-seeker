@@ -37,7 +37,7 @@ export const LINES: Line[] = [
   // The dial lands on $25 at 53.
   { at: 52.6, text: 'Twenty-five dollars.' },
   { at: 55.9, text: 'Every Friday.' },
-  { at: 60.4, text: 'It lets you buy real stocks.' },
+  { at: 60.4, text: 'It lets you buy real stocks and crypto.' },
   { at: 69, text: 'Even companies that aren’t public yet.' },
   // The ring closes on 80.
   { at: 81, text: 'Promise kept.' },
@@ -51,13 +51,13 @@ export const LINES: Line[] = [
   { at: 108.6, text: 'Back on track.' },
   // The pull-back to the crowd; the wave of rings closing starts at 114.
   { at: 112.6, text: 'It’s not just you.' },
-  { at: 115.2, text: 'It’s everyone around you.' },
+  { at: 115.3, text: 'It’s everyone around you.' },
   { at: 121, text: 'Week after week.' },
-  { at: 123.8, text: 'Month after month.' },
+  { at: 124.7, text: 'Month after month.' },
   // The missed week crosses frame at about 128.
-  { at: 126.8, text: 'Miss a week, and just keep going.' },
+  { at: 127.55, text: 'Miss a week, and just keep going.' },
   // The tally under the row counts up from 128.
-  { at: 131.4, text: 'You barely notice it adding up.' },
+  { at: 132.7, text: 'You barely notice it adding up.' },
   // Ten years fill and the tally compounds to $18,236 (closing.tsx), landing at about 146.
   {
     at: 139,
