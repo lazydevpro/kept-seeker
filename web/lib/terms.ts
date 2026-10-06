@@ -6,7 +6,7 @@
  * build with no path into the backend workspace. Change both together, and raise
  * TERMS_VERSION there when the change is material.
  */
-export const TERMS_VERSION = 1
+export const TERMS_VERSION = 2
 
 export const RESTRICTED_JURISDICTIONS = [
   'the United States',

@@ -13,8 +13,9 @@
  * before launch, and again whenever it changes.
  *
  * Raising TERMS_VERSION asks everyone to agree again on their next purchase.
+ * 2 (7 Oct 2026): crypto added to the shelf and to §3–§5 of the terms.
  */
-export const TERMS_VERSION = 1;
+export const TERMS_VERSION = 2;
 
 export const RESTRICTED_JURISDICTIONS = [
   "the United States",

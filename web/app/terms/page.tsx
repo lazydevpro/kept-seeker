@@ -12,11 +12,11 @@ const restricted = `${RESTRICTED_JURISDICTIONS.slice(0, -1).join(', ')} or ${RES
 
 export default function Terms() {
   return (
-    <LegalPage title="Terms of use" updated="23 September 2026">
+    <LegalPage title="Terms of use" updated="7 October 2026">
       <p className="summary">
         KEPT helps you keep a weekly investing habit. It is not a broker, bank or adviser, it never holds your
-        money, and what you buy can lose value. Tokenized stocks and private-market tokens are not available to
-        U.S. persons or to residents of {restricted}.
+        money, and what you buy can lose value. Buying through KEPT — tokenized stocks, crypto and
+        private-market tokens alike — is not available to U.S. persons or to residents of {restricted}.
       </p>
 
       <h2>1. Agreeing to these terms</h2>
@@ -43,8 +43,9 @@ export default function Terms() {
 
       <h2>3. Who may buy through KEPT</h2>
       <p>
-        The issuers of the assets available in KEPT restrict who may acquire them. Before your first purchase
-        you will be asked to confirm, and by buying you confirm, that:
+        The issuers of tokenized stocks and private-market tokens restrict who may acquire them, and KEPT
+        applies the same restrictions to every purchase made through it, crypto included. Before your first
+        purchase you will be asked to confirm, and by buying you confirm, that:
       </p>
       <ul>
         <li>you are not a U.S. person, and you are not acting for or on behalf of one;</li>
@@ -69,17 +70,25 @@ export default function Terms() {
           company’s valuation. They are not equity in that company, can be illiquid, and carry a 0.20% fee on
           every transfer that the token itself charges.
         </li>
+        <li>
+          <strong>Crypto</strong> means the crypto assets offered in KEPT: SOL, the Solana network’s native
+          asset; cbBTC, a token issued by Coinbase, which states that it is backed one for one by bitcoin it
+          holds — it is not bitcoin itself, and depends on Coinbase; and SKR, the native token of the Solana
+          Mobile ecosystem. None of them is a share, a deposit or a claim on KEPT or anyone else, and none pays
+          interest or carries ownership rights.
+        </li>
       </ul>
       <p>
-        Both depend on their issuers, the Solana network and the liquidity available when you trade. KEPT does
-        not issue, guarantee or stand behind any of them.
+        All of them depend on the Solana network and the liquidity available when you trade, and, where they
+        have one, on their issuer. KEPT does not issue, guarantee or stand behind any of them.
       </p>
 
       <h2>5. Risk</h2>
       <p>
-        Investing involves risk, including losing everything you put in. Prices move, sometimes sharply; routes
-        can fail; networks can congest; issuers can halt, freeze or redeem tokens under their own terms. Past
-        performance says nothing about the future. Only invest what you can afford to lose.
+        Investing involves risk, including losing everything you put in. Prices move, sometimes sharply — crypto
+        prices can rise or fall by a large share of their value within hours; routes can fail; networks can
+        congest; issuers can halt, freeze or redeem tokens under their own terms. Past performance says nothing
+        about the future. Only invest what you can afford to lose.
       </p>
 
       <h2>6. Your wallet and transactions</h2>
