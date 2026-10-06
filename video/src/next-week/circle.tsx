@@ -117,7 +117,7 @@ function OurScreen({ beat, spb, chrome }: { beat: number; spb: number; chrome: n
           opacity: chrome,
         }}
       >
-        $25 · SpaceX
+        $25 · Solana
       </div>
       {CHIPS.map((sx, k) => {
         const pop = spring((beat - REACTIONS[k]!) * spb, { w: 16, z: 0.55 })
@@ -248,7 +248,7 @@ function ShareCard({
             transform: `translateY(${gone * 46}px)`,
           }}
         >
-          $25 · SpaceX
+          $25 · Solana
         </div>
       </div>
     </Card>

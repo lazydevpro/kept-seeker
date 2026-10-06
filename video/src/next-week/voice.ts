@@ -18,7 +18,15 @@
  * Plain values only — the script imports this file straight into Node.
  */
 
-export type Line = { at: number; text: string }
+/**
+ * `silent`: recorded in the take but left out of the film. The take is cut against every line,
+ * so a line the film no longer wants stays in the script, and the approved recording stays valid.
+ */
+export type Line = { at: number; text: string; silent?: boolean }
+
+/** The texts the film plays without. */
+export const SILENT_TEXTS = (): Set<string> =>
+  new Set(LINES.filter((line) => line.silent).map((line) => line.text))
 
 export const LINES: Line[] = [
   // The problem — the to-do appears, then gets pushed.
@@ -38,7 +46,8 @@ export const LINES: Line[] = [
   { at: 52.6, text: 'Twenty-five dollars.' },
   { at: 55.9, text: 'Every Friday.' },
   { at: 60.4, text: 'It lets you buy real stocks and crypto.' },
-  { at: 69, text: 'Even companies that aren’t public yet.' },
+  // Private markets are off in the Seeker build (Oct 2026); the line stays in the take, unplayed.
+  { at: 69, text: 'Even companies that aren’t public yet.', silent: true },
   // The ring closes on 80.
   { at: 81, text: 'Promise kept.' },
   { at: 88.2, text: 'Your circle sees you kept your promise.' },

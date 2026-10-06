@@ -356,7 +356,7 @@ export function PromiseWords({ beat }: Clock) {
 
 // ── Invest ───────────────────────────────────────────────────────────────────────────────
 
-/** The shelf, in the order the voice names it: stocks, then crypto, then the private names. */
+/** The shelf, in the order the voice names it: stocks, then crypto, landing on Solana. */
 const NAMES: { name: string; chip?: 'Crypto' | 'Private' }[] = [
   { name: 'Tesla' },
   { name: 'Nvidia' },
@@ -364,8 +364,6 @@ const NAMES: { name: string; chip?: 'Crypto' | 'Private' }[] = [
   { name: 'Apple' },
   { name: 'Bitcoin', chip: 'Crypto' },
   { name: 'Solana', chip: 'Crypto' },
-  { name: 'OpenAI', chip: 'Private' },
-  { name: 'SpaceX', chip: 'Private' },
 ]
 const CHIP = {
   Crypto: { background: L.skyTint, color: L.skyDeep },
@@ -376,8 +374,8 @@ const ROW = 210
 
 /** The reel's position, in rows. Steady through the public names, then slowing onto the last. */
 function reelAt(beat: number) {
-  if (beat <= 69.5) return (beat - 62.5) / 1.25
-  const start = (69.5 - 62.5) / 1.25
+  if (beat <= 69.5) return (beat - 62.5) / 1.5
+  const start = (69.5 - 62.5) / 1.5
   const t = span(beat, 69.5, 73.5, (x) => 1 - (1 - x) * (1 - x))
   return lerp(start, PICK, t)
 }
@@ -448,7 +446,7 @@ export function Invest({ beat, spb }: Clock) {
               transform: `scale(${press})`,
             }}
           >
-            Buy $25 of SpaceX
+            Buy $25 of Solana
           </div>
         )}
       </Phone>
@@ -545,14 +543,6 @@ export function InvestWords({ beat }: Clock) {
         size={60}
         words={['It lets you buy real stocks and', { accent: 'crypto.' }]}
       />
-      <Caption
-        beat={beat}
-        at={69}
-        out={74.8}
-        y={120}
-        size={60}
-        words={["Even companies that aren't", { accent: 'public' }, 'yet.']}
-      />
     </>
   )
 }
@@ -630,7 +620,7 @@ function BuyToRing({ beat }: Clock) {
           opacity: 1 - span(beat, 77, 77.4),
         }}
       >
-        Buy $25 of SpaceX
+        Buy $25 of Solana
       </div>
     </>
   )

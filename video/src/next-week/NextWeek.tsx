@@ -11,6 +11,7 @@ import { End, Year, YearWords, endDark } from './closing'
 import { Sound } from './sound'
 import { FPS, TRACKS, filmFrames, framesPerBeat } from './tracks'
 import type { Take } from './voice'
+import { SILENT_TEXTS } from './voice'
 
 /**
  * "Next week" — the product video. See docs/product-video.md.
@@ -42,6 +43,8 @@ export const calculateNextWeekMetadata: CalculateMetadataFunction<NextWeekProps>
       )
     }
     take = (await res.json()) as Take
+    const silent = SILENT_TEXTS()
+    take = { ...take, lines: take.lines.filter((line) => !silent.has(line.text)) }
   }
   return { durationInFrames: filmFrames(track.bpm), fps: FPS, props: { ...props, take } }
 }
