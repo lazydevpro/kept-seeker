@@ -1,8 +1,8 @@
 # KEPT for Seeker — _Promises compound._
 
 KEPT is a private social investing habit app for Solana Mobile. You make one small weekly
-promise — *$20, every Friday* — and keep it by buying a tokenized stock, a crypto asset or a
-private-market token from your own wallet. A few people you trust see **that** you kept it,
+promise — *$20, every Friday* — and keep it by buying crypto or a tokenized stock from your own
+wallet. A few people you trust see **that** you kept it,
 never **how much**.
 
 ## Clock In — a Solana Mobile hackathon
@@ -29,18 +29,18 @@ never **how much**.
   - invite links that open the app (Android App Links);
   - nothing that works only in a browser.
 
-**New for Clock In.** The Seeker edition adds a **crypto shelf**: SOL, bitcoin as Coinbase's
-cbBTC, and SKR, the Solana Mobile ecosystem's own asset. It sits beside tokenized stocks
-(xStocks) and private markets (Tessera). This edition also runs on a stack of its own, listed
-below.
+**New for Clock In.** The Seeker edition leads with **crypto**: SOL, bitcoin as Coinbase's cbBTC,
+and SKR, the Solana Mobile ecosystem's own asset, ahead of tokenized stocks (xStocks). Private
+markets are off in this edition (`PRIVATE_MARKETS` on the API). It runs on a stack of its own,
+listed below.
 
 **Try it.**
 1. Install the APK and allow the install when Android asks.
 2. Have a wallet app with a few dollars of USDC and a little SOL for fees.
 3. Set a goal and a weekly promise, connect the wallet, and keep week one with a $1 buy.
 
-Tokenized stocks and private-market tokens aren't offered to U.S. persons or in a few
-restricted countries, because their issuers don't allow it. Crypto is open more widely: only the
+Tokenized stocks aren't offered to U.S. persons or in a few restricted countries, because their
+issuer doesn't allow it. Crypto is open more widely: only the
 regions under U.S. embargo (the same ones the Solana dApp Store excludes) and the United Kingdom are
 left out. Goals, circles, cheers and nudges work everywhere.
 

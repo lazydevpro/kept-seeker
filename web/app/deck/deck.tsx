@@ -337,15 +337,11 @@ const SLIDES: ReactNode[] = [
         </h2>
         <ul className={styles.bullets}>
           <li>
+            <b>Crypto first,</b> new for Seeker: SOL, bitcoin as Coinbase’s cbBTC, and SKR, Solana Mobile’s own.
+          </li>
+          <li>
             <b>1,100+ tokenized stocks and ETFs</b> through xStocks — the S&amp;P 500, Nvidia, Tesla, gold —
             priced live.
-          </li>
-          <li>
-            <b>Crypto,</b> new for Seeker: SOL, bitcoin as Coinbase’s cbBTC, and SKR, Solana Mobile’s own.
-          </li>
-          <li>
-            <b>Private markets</b> through Tessera — OpenAI, SpaceX, Kalshi — marked <i>Private</i>, behind a
-            disclosure you accept first.
           </li>
           <li>
             <b>Fractional,</b> so $20 buys a real slice. Routed by Jupiter, approved in your own wallet.
@@ -501,8 +497,7 @@ const SLIDES: ReactNode[] = [
       </div>
     </div>
     <p className={styles.stack}>
-      Expo · Android · Cloudflare Workers, D1, Queues, Durable Objects · Jupiter · xStocks · Tessera · Solana
-      mainnet
+      Expo · Android · Cloudflare Workers, D1, Queues, Durable Objects · Jupiter · xStocks · Solana mainnet
     </p>
   </Slide>,
 
@@ -543,7 +538,6 @@ const SLIDES: ReactNode[] = [
         <p className={styles.archHead}>Solana &amp; partners</p>
         <Box title="Jupiter">Swap orders and execution, live prices, charts.</Box>
         <Box title="xStocks">1,100+ tokenized stocks and ETFs. The catalogue is cached for an hour.</Box>
-        <Box title="Tessera">Private markets, with an offline fallback so the lane never empties.</Box>
         <Box title="Crypto">
           SOL, cbBTC and SKR. SOL arrives as lamports, so it is verified from the wallet’s balance.
         </Box>
@@ -745,10 +739,6 @@ This signature does not authorize a transaction.`}</pre>
         <p className={styles.when}>Next</p>
         <h3>More worth keeping</h3>
         <ul className={styles.bullets}>
-          <li>
-            <b>More private markets:</b> Anthropic, Anduril, Neuralink and Polymarket through PreStocks, once
-            their issuer controls are disclosed.
-          </li>
           <li>
             <b>Share more, if you choose:</b> amounts or holdings, for a circle you trust completely. Already in
             the schema, off by default.

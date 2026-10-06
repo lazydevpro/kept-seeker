@@ -32,7 +32,7 @@ const PUBLIC_ROWS = [
 const PRIVATE_ROWS = [
   { label: 'Portfolio', value: '$1,284.60' },
   { label: 'This week', value: '$20 → 0.0259 SPYx' },
-  { label: 'Holdings', value: 'SPYx · NVDAx · tOpenAI' },
+  { label: 'Holdings', value: 'SOL · SPYx · NVDAx' },
 ]
 
 export function Privacy() {

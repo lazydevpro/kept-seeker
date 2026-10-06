@@ -18,7 +18,7 @@ export const CRYPTO_RESTRICTED_JURISDICTIONS = [
   'the Crimea, Donetsk and Luhansk regions',
 ] as const
 
-/** Who may not buy tokenized stocks or private-market tokens: the issuers' list. */
+/** Who may not buy tokenized stocks: the issuer's list. */
 export const RESTRICTED_JURISDICTIONS = [
   'the United States',
   'Canada',

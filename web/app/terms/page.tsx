@@ -17,9 +17,8 @@ export default function Terms() {
     <LegalPage title="Terms of use" updated="7 October 2026">
       <p className="summary">
         KEPT helps you keep a weekly investing habit. It is not a broker, bank or adviser, it never holds your
-        money, and what you buy can lose value. Tokenized stocks and private-market tokens are not available to
-        U.S. persons or to residents of {restricted}. Crypto is not available to residents of {cryptoRestricted}
-        .
+        money, and what you buy can lose value. Tokenized stocks are not available to U.S. persons or to
+        residents of {restricted}. {`Crypto is not available to residents of ${cryptoRestricted}.`}
       </p>
 
       <h2>1. Agreeing to these terms</h2>
@@ -56,9 +55,9 @@ export default function Terms() {
           excludes, and the United Kingdom, whose rules on promoting crypto to consumers KEPT does not meet;
         </li>
         <li>
-          <strong>for tokenized stocks and private-market tokens,</strong> that you are not a U.S. person, are
-          not acting for or on behalf of one, and are not resident in, located in or a citizen of {restricted}.
-          Their issuers restrict who may acquire them.
+          <strong>for tokenized stocks,</strong> that you are not a U.S. person, are not acting for or on behalf
+          of one, and are not resident in, located in or a citizen of {restricted}. Their issuers restrict who
+          may acquire them.
         </li>
       </ul>
       <p>
@@ -73,11 +72,6 @@ export default function Terms() {
         <li>
           <strong>xStocks</strong> are tokens issued by a third party that track the price of a listed share or
           fund. They are not the share itself, and do not give you the rights of a shareholder.
-        </li>
-        <li>
-          <strong>Tessera T-Tokens</strong> are loan participation rights whose value is linked to a private
-          company’s valuation. They are not equity in that company, can be illiquid, and carry a 0.20% fee on
-          every transfer that the token itself charges.
         </li>
         <li>
           <strong>Crypto</strong> means the crypto assets offered in KEPT: SOL, the Solana network’s native

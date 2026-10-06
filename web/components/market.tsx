@@ -2,16 +2,7 @@
 
 import { useEffect, useId, useState } from 'react'
 import { Card, Chip } from '@/components/ui'
-import {
-  CAPTURED_ON,
-  LISTINGS,
-  MARKS_CAPTURED_ON,
-  PRIVATE_MARKS,
-  fetchQuotes,
-  money,
-  units,
-  type Quote,
-} from '@/lib/prices'
+import { CAPTURED_ON, LISTINGS, fetchQuotes, money, units, type Quote } from '@/lib/prices'
 import styles from './market.module.css'
 
 /**
@@ -65,8 +56,7 @@ export function Market() {
             Real assets, <em className="serif">real chain.</em>
           </h2>
           <p className="lede">
-            Tokenised equities, crypto and private-market names, settled on Solana from a wallet only you hold
-            the keys to.
+            Crypto and tokenised equities, settled on Solana from a wallet only you hold the keys to.
           </p>
         </header>
 
@@ -74,20 +64,20 @@ export function Market() {
           {/* ── Live ticker ── */}
           <Card className={styles.ticker}>
             <div className={styles.tickerHead}>
-              <h3 className={styles.cardTitle}>Public markets</h3>
+              <h3 className={styles.cardTitle}>Crypto</h3>
               <Chip label={live ? 'Live · Jupiter' : `As of ${CAPTURED_ON}`} tone={live ? 'kiwi' : 'neutral'} />
             </div>
             <ul className={styles.rows}>
               {quotes
-                .filter((quote) => quote.kind === 'stock')
+                .filter((quote) => quote.kind === 'crypto')
                 .map((quote) => (
                   <Row key={quote.symbol} quote={quote} />
                 ))}
             </ul>
-            <h4 className={styles.subhead}>Crypto</h4>
+            <h4 className={styles.subhead}>Tokenized stocks</h4>
             <ul className={styles.rows}>
               {quotes
-                .filter((quote) => quote.kind === 'crypto')
+                .filter((quote) => quote.kind === 'stock')
                 .map((quote) => (
                   <Row key={quote.symbol} quote={quote} />
                 ))}
@@ -171,30 +161,6 @@ export function Market() {
               {live
                 ? 'Priced against a live Jupiter quote. Nothing is submitted from this page.'
                 : `Priced against the ${CAPTURED_ON} capture — the live quote could not be reached.`}
-            </p>
-          </Card>
-
-          {/* ── Private marks ── */}
-          <Card className={styles.privates}>
-            <div className={styles.tickerHead}>
-              <h3 className={styles.cardTitle}>Private markets</h3>
-              <Chip label="Marked, not traded" tone="grape" />
-            </div>
-            <ul className={styles.rows}>
-              {PRIVATE_MARKS.map((item) => (
-                <li key={item.symbol} className={styles.row}>
-                  <span className={styles.rowSymbol}>{item.symbol}</span>
-                  <span className={styles.rowName}>{item.sector}</span>
-                  <span className={`${styles.rowPrice} numeric`}>${money(item.mark)}</span>
-                  <span className={`${styles.rowChange} numeric`} data-dir="flat">
-                    {item.valuation}
-                  </span>
-                </li>
-              ))}
-            </ul>
-            <p className={styles.fine}>
-              Loan participation rights in pre-IPO names, marked periodically rather than quoted continuously.
-              Held through Tessera, as of {MARKS_CAPTURED_ON}.
             </p>
           </Card>
         </div>

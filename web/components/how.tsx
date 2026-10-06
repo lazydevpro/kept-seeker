@@ -44,12 +44,12 @@ const STEPS: {
     tone: 'grape',
     step: 'Two',
     title: 'Buy the real thing',
-    body: 'Tokenised equities, crypto and private-market names, settled on Solana from your own wallet.',
+    body: 'Crypto and tokenised equities, settled on Solana from your own wallet.',
     card: (
       <>
         <Chip label="Verified mint" tone="grape" />
         <p className={styles.cardStat}>
-          <span className="numeric">0.0259</span> <span className={styles.cardUnit}>SPYx</span>
+          <span className="numeric">0.1643</span> <span className={styles.cardUnit}>SOL</span>
         </p>
         <p className={styles.cardMeta}>$20.00 · price impact 0.01%</p>
       </>

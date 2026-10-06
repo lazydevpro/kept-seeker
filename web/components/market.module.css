@@ -14,9 +14,7 @@
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  grid-template-areas:
-    'ticker ticket'
-    'private ticket';
+  grid-template-areas: 'ticker ticket';
   gap: clamp(1.25rem, 2.5vw, 2rem);
   align-items: start;
 }
@@ -26,8 +24,7 @@
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       'ticket'
-      'ticker'
-      'private';
+      'ticker';
   }
 }
 
@@ -64,7 +61,7 @@
   font-weight: 600;
 }
 
-/* The crypto rows share the public card: same live source, same row, a quiet label between. */
+/* Crypto and tokenized stocks share one card: same live source, same row, a quiet label between. */
 .subhead {
   margin: var(--space-5) 0 var(--space-1);
   font-size: var(--text-caption-size);

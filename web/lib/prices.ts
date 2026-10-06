@@ -40,9 +40,6 @@ const JUPITER_PRICE_URL = 'https://api.jup.ag/price/v3'
 /** Captured 2026-10-06. Also the resting state before the fetch lands. */
 export const CAPTURED_ON = '6 October 2026'
 
-/** Tessera's marks, read on their own date. */
-export const MARKS_CAPTURED_ON = '21 September 2026'
-
 export type Listing = {
   symbol: string
   name: string
@@ -125,28 +122,7 @@ export const CRYPTO: Listing[] = [
 ]
 
 /** Everything the page quotes live, in the order the ticker lists it. */
-export const LISTINGS: Listing[] = [...EQUITIES, ...CRYPTO]
-
-/** From `rest-api.tessera.pe/v1/public/token-details`, read server-side on MARKS_CAPTURED_ON. */
-export const PRIVATE_MARKS = [
-  {
-    symbol: 'tOpenAI',
-    name: 'OpenAI',
-    sector: 'Artificial intelligence',
-    mark: 812.79,
-    holders: 8259,
-    valuation: '$950B',
-  },
-  { symbol: 'tSpaceX', name: 'SpaceX', sector: 'Aerospace', mark: 423.0, holders: 1274, valuation: '$800B' },
-  {
-    symbol: 'tKalshi',
-    name: 'Kalshi',
-    sector: 'Prediction markets',
-    mark: 413.8,
-    holders: 2605,
-    valuation: '$14B',
-  },
-] as const
+export const LISTINGS: Listing[] = [...CRYPTO, ...EQUITIES]
 
 export type Quote = {
   symbol: string

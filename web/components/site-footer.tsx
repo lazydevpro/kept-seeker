@@ -39,7 +39,7 @@ export function SiteFooter() {
           </nav>
           <p className={styles.built}>
             Built for Solana Mobile. Expo and Mobile Wallet Adapter on the phone, Cloudflare Workers and D1
-            behind it, xStocks, crypto and Tessera on the shelf.
+            behind it, crypto and xStocks on the shelf.
           </p>
         </div>
 
