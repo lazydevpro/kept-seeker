@@ -12,8 +12,13 @@
 set -eu
 cd "$(dirname "$0")/.."
 
-JAVA_HOME=${JAVA_HOME:-/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home}
-ANDROID_HOME=${ANDROID_HOME:-/opt/homebrew/share/android-commandlinetools}
+# JDK 17 from Homebrew unless KEPT_JAVA_HOME says otherwise — not $JAVA_HOME, which shells often
+# point at an Android Studio that is no longer installed.
+JAVA_HOME=${KEPT_JAVA_HOME:-/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home}
+[ -x "$JAVA_HOME/bin/java" ] || { echo "No JDK at $JAVA_HOME — install JDK 17: brew install openjdk@17" >&2; exit 1; }
+# The Homebrew SDK unless KEPT_ANDROID_HOME says otherwise, for the same reason as JAVA_HOME.
+ANDROID_HOME=${KEPT_ANDROID_HOME:-/opt/homebrew/share/android-commandlinetools}
+[ -d "$ANDROID_HOME/build-tools/36.0.0" ] || { echo "No Android build-tools 36.0.0 under $ANDROID_HOME" >&2; exit 1; }
 KEYS=${KEPT_KEYS:-$HOME/.kept-seeker/android}
 BT="$ANDROID_HOME/build-tools/36.0.0"
 VERSION=$(node -p "require('./app.json').expo.version")
