@@ -2,6 +2,7 @@ import { applyD1Migrations, env, SELF } from "cloudflare:test";
 import { Hono } from "hono";
 import {
   processQueue,
+  receivedAmount,
   runWeeklyReminder,
   sweepPendingContributions,
 } from "../src/jobs";
@@ -1489,5 +1490,147 @@ describe("Launch readiness", () => {
     expect(await refused.json()).toMatchObject({
       error: { code: "rate_limited" },
     });
+  });
+});
+
+describe("crypto on the shelf", () => {
+  const WALLET = "Wa11et1111111111111111111111111111111111111";
+  const PAYER = "Jup1terPayer111111111111111111111111111111";
+  const SOL = "So11111111111111111111111111111111111111112";
+  const CBBTC = "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij";
+  const FEE = 5_000;
+
+  type Transaction = Parameters<typeof receivedAmount>[0];
+  const transaction = (
+    meta: Partial<NonNullable<Transaction["meta"]>>,
+    keys = [WALLET, PAYER],
+  ): Transaction => ({
+    blockTime: 1_790_000_000,
+    meta: { err: null, ...meta },
+    transaction: { message: { accountKeys: keys }, signatures: ["sig"] },
+  });
+
+  it("lists SOL, cbBTC and SKR without asking any stock provider", async () => {
+    const signIn = await SELF.fetch(
+      "https://local.test/api/auth/sign-in/anonymous",
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          origin: "keptseeker://",
+        },
+        body: "{}",
+      },
+    );
+    const response = await SELF.fetch(
+      "https://local.test/v1/trades/assets?symbols=SOL,cbBTC,SKR",
+      { headers: { cookie: signIn.headers.get("set-cookie") ?? "" } },
+    );
+    expect(response.status).toBe(200);
+    const payload = (await response.json()) as { assets: unknown[] };
+    expect(payload.assets).toMatchObject([
+      {
+        symbol: "SOL",
+        mint: SOL,
+        provider: "crypto",
+        instrument: "crypto",
+        available: true,
+      },
+      { symbol: "cbBTC", mint: CBBTC, provider: "crypto", transferFeeBps: 0 },
+      {
+        symbol: "SKR",
+        mint: "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3",
+        provider: "crypto",
+      },
+    ]);
+  });
+
+  it("counts a token purchase from token balances, as before", () => {
+    const balance = (amount: string) => ({
+      mint: CBBTC,
+      owner: WALLET,
+      uiTokenAmount: { amount, decimals: 8 },
+    });
+    expect(
+      receivedAmount(
+        transaction({
+          fee: FEE,
+          preBalances: [1_000_000_000, 0],
+          postBalances: [1_000_000_000 - FEE, 0],
+          preTokenBalances: [balance("100")],
+          postTokenBalances: [balance("2600")],
+        }),
+        WALLET,
+        CBBTC,
+      ),
+    ).toEqual({ amount: 2500n, decimals: 8 });
+  });
+
+  it("counts SOL bought from lamports, with the fee the wallet paid added back", () => {
+    // 0.1 SOL arrives; the wallet paid a 5,000-lamport fee for the swap.
+    expect(
+      receivedAmount(
+        transaction({
+          fee: FEE,
+          preBalances: [20_000_000, 0],
+          postBalances: [20_000_000 + 100_000_000 - FEE, 0],
+        }),
+        WALLET,
+        SOL,
+      ),
+    ).toEqual({ amount: 100_000_000n, decimals: 9 });
+  });
+
+  it("counts SOL sold as a negative delta, fee excluded", () => {
+    expect(
+      receivedAmount(
+        transaction({
+          fee: FEE,
+          preBalances: [500_000_000, 0],
+          postBalances: [500_000_000 - 250_000_000 - FEE, 0],
+        }),
+        WALLET,
+        SOL,
+      ),
+    ).toEqual({ amount: -250_000_000n, decimals: 9 });
+  });
+
+  it("adds nothing back when someone else paid the fee", () => {
+    // A gasless route: the router is the fee payer, the wallet only receives.
+    expect(
+      receivedAmount(
+        transaction(
+          {
+            fee: FEE,
+            preBalances: [10_000_000_000, 20_000_000],
+            postBalances: [10_000_000_000 - FEE, 120_000_000],
+          },
+          [PAYER, WALLET],
+        ),
+        WALLET,
+        SOL,
+      ),
+    ).toEqual({ amount: 100_000_000n, decimals: 9 });
+  });
+
+  it("still counts wrapped SOL a wallet keeps wrapped", () => {
+    const wrapped = (amount: string) => ({
+      mint: SOL,
+      owner: WALLET,
+      uiTokenAmount: { amount, decimals: 9 },
+    });
+    expect(
+      receivedAmount(
+        transaction({
+          fee: FEE,
+          preBalances: [20_000_000, 0],
+          postBalances: [20_000_000 - FEE, 0],
+          preTokenBalances: [wrapped("0")],
+          postTokenBalances: [wrapped("100000000")],
+        }),
+        WALLET,
+        SOL,
+      ),
+    ).toEqual({ amount: 100_000_000n, decimals: 9 });
   });
 });

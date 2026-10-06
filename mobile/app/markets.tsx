@@ -22,13 +22,7 @@ import { Icon } from '@/design/icons'
 import { Illustration } from '@/design/illustrations'
 import { AssetLogo } from '@/features/trade/asset-logo'
 import { useAssetCatalog, type InvestableAsset } from '@/features/trade/trade-api'
-
-const price = (value: number) =>
-  value.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: value >= 1000 ? 0 : 2,
-  })
+import { formatPrice as price } from '@/features/trade/format-price'
 
 export default function MarketsScreen() {
   const { colors } = useAppTheme()
@@ -135,6 +129,7 @@ function AssetRow({ asset, onSelect }: { asset: InvestableAsset; onSelect: (asse
             {asset.symbol}
           </T>
           {asset.provider === 'tessera' ? <Chip label="Private" tone="grape" /> : null}
+          {asset.provider === 'crypto' ? <Chip label="Crypto" tone="sky" /> : null}
           {!asset.available ? <Chip label="Halted" tone="neutral" /> : null}
         </Row>
         <T role="caption" color={colors.inkFaint} numberOfLines={1}>

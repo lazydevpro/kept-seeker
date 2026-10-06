@@ -15,7 +15,7 @@ import {
 import { ApiError, id } from "../lib/http";
 import { fetchQuotes } from "../lib/prices";
 import { positionFor } from "../lib/holdings";
-import { rpcUrl } from "../lib/solana";
+import { NATIVE_SOL_MINT, rpcUrl } from "../lib/solana";
 import { TERMS_VERSION } from "../lib/terms";
 import { fetchTokens } from "../lib/tokens";
 import { parseJson } from "../lib/validation";
@@ -48,6 +48,9 @@ const FEATURED = [
   "tOpenAI",
   "tSpaceX",
   "tKalshi",
+  "SOL",
+  "cbBTC",
+  "SKR",
   "NVDAx",
   "AAPLx",
   "MSFTx",
@@ -116,7 +119,7 @@ interface XStocksAsset {
   }>;
 }
 
-type AssetProvider = "xstocks" | "tessera";
+type AssetProvider = "xstocks" | "tessera" | "crypto";
 
 interface InvestableAsset {
   name: string;
@@ -127,8 +130,62 @@ interface InvestableAsset {
   available: boolean;
   supportsAtomicSwaps: boolean;
   provider: AssetProvider;
-  instrument: "tokenized_stock" | "loan_participation";
+  instrument: "tokenized_stock" | "loan_participation" | "crypto";
   transferFeeBps: number;
+}
+
+/**
+ * Crypto, for the Seeker: three assets, chosen the way the rest of the shelf is —
+ * for a weekly habit, not for trading.
+ *
+ * SOL is the network's own. BTC is Coinbase's cbBTC, issued against bitcoin
+ * Coinbase holds rather than carried over a bridge. SKR is the Solana Mobile
+ * ecosystem's own asset, which most Seeker owners already hold. Each mint was
+ * checked against its issuer and quoted through Jupiter (6 Oct 2026); all three
+ * are classic SPL mints with no transfer fee.
+ *
+ * SOL is listed under the wrapped-SOL mint, which is how Jupiter names it. What
+ * lands in the wallet is plain SOL, so verification counts it from lamports
+ * (`receivedAmount` in jobs.ts).
+ */
+
+const CRYPTO_ASSETS: readonly InvestableAsset[] = [
+  {
+    name: "Solana",
+    symbol: "SOL",
+    mint: NATIVE_SOL_MINT,
+    logo: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png",
+    description:
+      "The Solana network's own asset. It pays for every transaction and secures the network through staking.",
+  },
+  {
+    name: "Bitcoin",
+    symbol: "cbBTC",
+    mint: "cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij",
+    logo: "https://gateway.pinata.cloud/ipfs/QmZ7L8yd5j36oXXydUiYFiFsRHbi3EdgC4RuFwvM7dcqge",
+    description:
+      "Coinbase Wrapped BTC: bitcoin held by Coinbase and issued one for one on Solana.",
+  },
+  {
+    name: "Seeker",
+    symbol: "SKR",
+    mint: "SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3",
+    logo: "https://r2.solanamobiledappstore.com/skr/seeker.png",
+    description:
+      "The native asset of the Solana Mobile ecosystem. Holders stake it to Guardians, who verify devices and curate the dApp Store.",
+  },
+].map((asset) => ({
+  ...asset,
+  available: true,
+  supportsAtomicSwaps: true,
+  provider: "crypto" as const,
+  instrument: "crypto" as const,
+  transferFeeBps: 0,
+}));
+
+function findCryptoAsset(symbol: string) {
+  const wanted = symbol.trim().toUpperCase();
+  return CRYPTO_ASSETS.find((asset) => asset.symbol.toUpperCase() === wanted);
 }
 
 interface OrderResponse {
@@ -405,6 +462,11 @@ async function getInvestableAssets(requestedSymbols: string[]) {
   const requested = new Set(
     requestedSymbols.map((symbol) => symbol.trim().toUpperCase()),
   );
+  const crypto = CRYPTO_ASSETS.filter((asset) =>
+    requested.has(asset.symbol.toUpperCase()),
+  );
+  for (const asset of crypto) requested.delete(asset.symbol.toUpperCase());
+  if (!requested.size) return crypto;
   const tessera = await getTesseraAssets();
   const tesseraAssets = tessera.filter((asset) =>
     requested.has(asset.symbol.toUpperCase()),
@@ -412,7 +474,7 @@ async function getInvestableAssets(requestedSymbols: string[]) {
   const xStockSymbols = [...requested].filter(
     (symbol) => !tessera.some((asset) => asset.symbol.toUpperCase() === symbol),
   );
-  if (!xStockSymbols.length) return tesseraAssets;
+  if (!xStockSymbols.length) return [...tesseraAssets, ...crypto];
   const xStocks = await getXStocksAssets();
   return [
     ...xStocks
@@ -420,10 +482,13 @@ async function getInvestableAssets(requestedSymbols: string[]) {
       .map(mapXStocksAsset)
       .filter((asset): asset is InvestableAsset => asset !== null),
     ...tesseraAssets,
+    ...crypto,
   ];
 }
 
 async function findInvestableAsset(symbol: string) {
+  const cryptoAsset = findCryptoAsset(symbol);
+  if (cryptoAsset) return cryptoAsset;
   const tesseraAsset = await findTesseraAsset(symbol);
   if (tesseraAsset) return tesseraAsset;
   const xStock = (await getXStocksAssets()).find(
@@ -440,6 +505,8 @@ async function findInvestableAsset(symbol: string) {
 async function findInvestableAssetByMint(
   mint: string,
 ): Promise<InvestableAsset | null> {
+  const crypto = CRYPTO_ASSETS.find((asset) => asset.mint === mint);
+  if (crypto) return crypto;
   const tessera = (await getTesseraAssets()).find(
     (asset) => asset.mint === mint,
   );
@@ -499,7 +566,7 @@ tradeRoutes.get("/catalog", async (c) => {
   const xStocks = xStocksRaw
     .map(mapXStocksAsset)
     .filter((asset): asset is InvestableAsset => asset !== null);
-  const everything = [...tessera, ...xStocks];
+  const everything = [...CRYPTO_ASSETS, ...tessera, ...xStocks];
 
   const matched = search
     ? everything.filter(

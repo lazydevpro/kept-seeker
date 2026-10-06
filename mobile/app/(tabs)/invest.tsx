@@ -8,6 +8,7 @@ import { makeThemedStyles, useAppTheme } from '@/components/theme-provider'
 import { Icon } from '@/design/icons'
 import { Object3D } from '@/design/objects'
 import { AssetLogo } from '@/features/trade/asset-logo'
+import { formatPrice } from '@/features/trade/format-price'
 import { PortfolioCard } from '@/features/portfolio/portfolio-card'
 import { useWalletLink } from '@/features/trade/use-wallet-link'
 import { useInvestableAssets, type InvestableAsset } from '@/features/trade/trade-api'
@@ -15,7 +16,7 @@ import { useNetwork } from '@/features/network/use-network'
 
 type ShelfAsset = InvestableAsset & {
   kind: string
-  shelf: 'public' | 'private'
+  shelf: 'public' | 'crypto' | 'private'
   tone: Tone
 }
 
@@ -67,6 +68,51 @@ const SHELF: ShelfAsset[] = [
     supportsAtomicSwaps: false,
     provider: 'xstocks',
     instrument: 'tokenized_stock',
+    transferFeeBps: 0,
+  },
+  {
+    symbol: 'SOL',
+    name: 'Solana',
+    kind: "The network's own",
+    shelf: 'crypto',
+    tone: 'grape',
+    mint: 'So11111111111111111111111111111111111111112',
+    logo: '',
+    description: '',
+    available: true,
+    supportsAtomicSwaps: true,
+    provider: 'crypto',
+    instrument: 'crypto',
+    transferFeeBps: 0,
+  },
+  {
+    symbol: 'cbBTC',
+    name: 'Bitcoin',
+    kind: 'Held by Coinbase',
+    shelf: 'crypto',
+    tone: 'sun',
+    mint: 'cbbtcf3aa214zXHbiAZQwf4122FBYbraNdFqgw4iMij',
+    logo: '',
+    description: '',
+    available: true,
+    supportsAtomicSwaps: true,
+    provider: 'crypto',
+    instrument: 'crypto',
+    transferFeeBps: 0,
+  },
+  {
+    symbol: 'SKR',
+    name: 'Seeker',
+    kind: 'Solana Mobile',
+    shelf: 'crypto',
+    tone: 'kiwi',
+    mint: 'SKRbvo6Gf7GondiT3BbTfuRDPqLWei4j2Qy2NPGZhW3',
+    logo: '',
+    description: '',
+    available: true,
+    supportsAtomicSwaps: true,
+    provider: 'crypto',
+    instrument: 'crypto',
     transferFeeBps: 0,
   },
   {
@@ -176,6 +222,13 @@ export default function InvestScreen() {
         />
 
         <Shelf
+          title="Crypto"
+          badge="On Solana"
+          assets={assets.filter((asset) => asset.shelf === 'crypto')}
+          onSelect={openAsset}
+        />
+
+        <Shelf
           title="Private markets"
           badge="Tessera"
           assets={assets.filter((asset) => asset.shelf === 'private')}
@@ -193,7 +246,7 @@ export default function InvestScreen() {
               Browse all markets
             </T>
             <T role="caption" color={colors.inkFaint}>
-              Every tokenised stock, live prices, no wallet needed
+              Stocks, crypto and private markets, live prices, no wallet needed
             </T>
           </View>
           <Icon name="chevronRight" size={18} color={colors.inkFaint} />
@@ -223,7 +276,7 @@ export default function InvestScreen() {
         <View style={styles.riskBody}>
           <RiskNote
             title="A small shelf, on purpose"
-            body="Five understandable options, chosen for a long-term habit. No trending lists, no performance races."
+            body="A few understandable options, chosen for a long-term habit. No trending lists, no performance races."
           />
           <RiskNote
             title="Quotes come from the route"
@@ -232,6 +285,10 @@ export default function InvestScreen() {
           <RiskNote
             title="Tokenized assets carry issuer risk"
             body="Issuer, liquidity, market and eligibility risks all apply, and they are not the same as owning the underlying."
+          />
+          <RiskNote
+            title="Crypto moves fast"
+            body="SOL, bitcoin and SKR can rise or fall sharply, often within a day. cbBTC also depends on Coinbase holding the bitcoin behind it."
           />
           <RiskNote
             title="T-Tokens are not shares"
@@ -293,15 +350,7 @@ function Shelf({
               {/* Live price, no wallet needed. A missing quote shows nothing
                   rather than a misleading zero. */}
               <View style={styles.assetPrice}>
-                {asset.priceUsd != null ? (
-                  <T role="label">
-                    {asset.priceUsd.toLocaleString('en-US', {
-                      style: 'currency',
-                      currency: 'USD',
-                      maximumFractionDigits: asset.priceUsd >= 1000 ? 0 : 2,
-                    })}
-                  </T>
-                ) : null}
+                {asset.priceUsd != null ? <T role="label">{formatPrice(asset.priceUsd)}</T> : null}
                 {asset.priceChange24h != null ? (
                   <T role="caption" color={asset.priceChange24h >= 0 ? colors.kiwiDeep : colors.coralDeep}>
                     {asset.priceChange24h >= 0 ? '+' : '−'}

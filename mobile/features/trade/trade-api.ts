@@ -10,8 +10,8 @@ export interface InvestableAsset {
   mint: string
   available: boolean
   supportsAtomicSwaps: boolean
-  provider: 'xstocks' | 'tessera'
-  instrument: 'tokenized_stock' | 'loan_participation'
+  provider: 'xstocks' | 'tessera' | 'crypto'
+  instrument: 'tokenized_stock' | 'loan_participation' | 'crypto'
   transferFeeBps: number
   /** Null when the asset has no quote — illiquid mints often don't. Never zero. */
   priceUsd?: number | null
@@ -36,7 +36,9 @@ export function useInvestableAssets() {
   return useQuery({
     queryKey: ['investable-assets'],
     queryFn: () =>
-      apiRequest<{ assets: InvestableAsset[] }>('/v1/trades/assets?symbols=SPYx,QQQx,TSLAx,tOpenAI,tKalshi,tSpaceX'),
+      apiRequest<{ assets: InvestableAsset[] }>(
+        '/v1/trades/assets?symbols=SPYx,QQQx,TSLAx,SOL,cbBTC,SKR,tOpenAI,tKalshi,tSpaceX',
+      ),
     staleTime: 60 * 60_000,
     retry: 1,
   })
@@ -52,8 +54,8 @@ export interface AssetDetail {
   symbol: string
   name: string
   logo: string
-  provider: 'xstocks' | 'tessera' | null
-  instrument: 'tokenized_stock' | 'loan_participation' | null
+  provider: 'xstocks' | 'tessera' | 'crypto' | null
+  instrument: 'tokenized_stock' | 'loan_participation' | 'crypto' | null
   transferFeeBps: number
   available: boolean
   decimals: number | null

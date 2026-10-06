@@ -1,6 +1,6 @@
 import type { AppEnv, Job, PushJob } from "./types";
 import { id } from "./lib/http";
-import { rpcUrl } from "./lib/solana";
+import { NATIVE_SOL_MINT, rpcUrl, SOL_DECIMALS } from "./lib/solana";
 
 /**
  * How long a signature may go unseen before it is presumed never to have landed.
@@ -17,6 +17,11 @@ interface RpcTransaction {
   blockTime: number | null;
   meta: {
     err: unknown;
+    /** Lamports, paid by the first account key. */
+    fee?: number;
+    /** Lamports per account, in `accountKeys` order. */
+    preBalances?: number[];
+    postBalances?: number[];
     preTokenBalances?: {
       mint: string;
       owner?: string;
@@ -71,8 +76,16 @@ type TokenBalances = NonNullable<RpcTransaction["meta"]>["postTokenBalances"];
  * `amount_base_units` is the router's estimate and is a literal '0' for sandbox,
  * so it must never be used for quantities. Shared by verification and by the
  * nightly backfill so the two cannot drift apart.
+ *
+ * SOL is the exception: it arrives as lamports, not as a token (see
+ * `NATIVE_SOL_MINT`). Its delta is the wallet's lamport change plus the fee, when
+ * the wallet paid it — a purchase of 0.1 SOL reads as 0.1, not 0.1 less the fee.
+ * Anything else the wallet spends in SOL inside the same transaction (a tip, a
+ * new account's rent) still comes off, so the count errs low, never high. Token
+ * balances of wrapped SOL are added on top, for the rare wallet that keeps it
+ * wrapped.
  */
-function receivedAmount(
+export function receivedAmount(
   transaction: RpcTransaction,
   owner: string,
   mint: string,
@@ -89,12 +102,27 @@ function receivedAmount(
     (balance) => balance.owner === owner && balance.mint === mint,
   )?.uiTokenAmount.decimals;
 
-  return {
-    amount:
-      held(transaction.meta?.postTokenBalances) -
-      held(transaction.meta?.preTokenBalances),
-    decimals: decimals ?? null,
-  };
+  const tokens =
+    held(transaction.meta?.postTokenBalances) -
+    held(transaction.meta?.preTokenBalances);
+
+  if (mint !== NATIVE_SOL_MINT)
+    return { amount: tokens, decimals: decimals ?? null };
+
+  const index = transaction.transaction.message.accountKeys.findIndex(
+    (key) => (typeof key === "string" ? key : key.pubkey) === owner,
+  );
+  const pre = transaction.meta?.preBalances?.[index];
+  const post = transaction.meta?.postBalances?.[index];
+  const lamports =
+    index < 0 || pre == null || post == null
+      ? 0n
+      : BigInt(post) -
+        BigInt(pre) +
+        // The fee payer is always the first key. Under a gasless route someone else
+        // pays, and nothing is added back.
+        (index === 0 ? BigInt(transaction.meta?.fee ?? 0) : 0n);
+  return { amount: tokens + lamports, decimals: SOL_DECIMALS };
 }
 
 /**

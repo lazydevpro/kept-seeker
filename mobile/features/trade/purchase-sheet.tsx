@@ -31,6 +31,7 @@ import { useAcceptTerms } from '@/features/account/account-api'
 import { useGoals, useMe } from '@/features/social/social-api'
 import { useNetwork } from '@/features/network/use-network'
 import { AssetLogo } from './asset-logo'
+import { formatPrice } from './format-price'
 import {
   executeTrade,
   requestTradeOrder,
@@ -99,6 +100,7 @@ export function PurchaseSheet({ asset, onClose }: { asset: InvestableAsset | nul
 
   const detail = useAssetDetail(asset?.mint ?? null).data?.asset ?? null
   const isTessera = (detail?.provider ?? asset?.provider) === 'tessera'
+  const isCrypto = (detail?.provider ?? asset?.provider) === 'crypto'
 
   const amount = Number(amountText.replace(/[^0-9.]/g, ''))
   const amountValid = Number.isFinite(amount) && amount >= MIN_USDC && amount <= MAX_USDC
@@ -302,7 +304,7 @@ export function PurchaseSheet({ asset, onClose }: { asset: InvestableAsset | nul
           {/* ── Price ── */}
           <View style={styles.priceBlock}>
             <Row gap={space[3]}>
-              <T role="stat">{price != null ? money(price) : '—'}</T>
+              <T role="stat">{price != null ? formatPrice(price) : '—'}</T>
               {change24h != null ? (
                 <T role="label" color={change24h >= 0 ? colors.kiwiDeep : colors.coralDeep}>
                   {pct(change24h)}
@@ -311,6 +313,7 @@ export function PurchaseSheet({ asset, onClose }: { asset: InvestableAsset | nul
             </Row>
             <Row gap={space[2]}>
               {isTessera ? <Chip label="Private market" tone="grape" /> : null}
+              {isCrypto ? <Chip label="Crypto" tone="sky" /> : null}
               {detail?.verified ? <Chip label="Verified mint" tone="neutral" /> : null}
             </Row>
           </View>
@@ -371,7 +374,7 @@ export function PurchaseSheet({ asset, onClose }: { asset: InvestableAsset | nul
               <T role="bodySmall" color={colors.inkMuted}>
                 Price each
               </T>
-              <T role="label">{quote?.pricePerUnit != null ? money(quote.pricePerUnit) : '—'}</T>
+              <T role="label">{quote?.pricePerUnit != null ? formatPrice(quote.pricePerUnit) : '—'}</T>
             </Row>
             <Row style={styles.receiptRow}>
               <T role="bodySmall" color={colors.inkMuted}>
