@@ -16,9 +16,10 @@ Plan: [docs/plans/clock-in-submission.md](docs/plans/clock-in-submission.md). Ow
 - [x] Release key (`~/.kept-seeker/android/`), APK 1.1.0 built and signed, published as the
       v1.1.0 pre-release on kept-seeker; `assetlinks.json` verified by Google (`linked: true`) #clockin
 - [x] Site live at kept-seeker.pages.dev (own account); crypto market section committed #web
-- [ ] Owner: redeploy the site for the crypto section (`cd web && npm run deploy`) #web
+- [x] Site redeployed: crypto market section live, download button → v1.1.0 APK (200) #web
 - [x] Film "Next week": "stocks and crypto" line, reel and small print; new take cut and
-      listened to by the owner. Render pending #film
+      listened to by the owner. Rendered (video/out/kept-next-week-16x9-product-vo.mp4), limited
+      to −0.9 dBFS peak at −13.9 LUFS #film
 - [x] Demo narration recorded (AI Studio), cut by `npm run narration`, listened to — good #film
 - [ ] Terms: §4 "The assets" covers xStocks and Tessera only; crypto needs the owner's wording #launch
 - [ ] Put the new key's SHA-256 in `web/public/.well-known/assetlinks.json`, redeploy the site #web
