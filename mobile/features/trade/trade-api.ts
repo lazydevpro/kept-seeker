@@ -35,10 +35,7 @@ export interface TradeOrder {
 export function useInvestableAssets() {
   return useQuery({
     queryKey: ['investable-assets'],
-    queryFn: () =>
-      apiRequest<{ assets: InvestableAsset[] }>(
-        '/v1/trades/assets?symbols=SPYx,QQQx,TSLAx,SOL,cbBTC,SKR,tOpenAI,tKalshi,tSpaceX',
-      ),
+    queryFn: () => apiRequest<{ assets: InvestableAsset[] }>('/v1/trades/assets?symbols=SOL,cbBTC,SKR,SPYx,QQQx,TSLAx'),
     staleTime: 60 * 60_000,
     retry: 1,
   })

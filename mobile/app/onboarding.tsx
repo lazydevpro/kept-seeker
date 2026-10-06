@@ -44,6 +44,9 @@ import {
 } from '@/features/onboarding/onboarding-state'
 import { enablePushNotifications } from '@/features/notifications/notification-bootstrap'
 import { useWalletLink } from '@/features/trade/use-wallet-link'
+import { shareCircleInvite } from '@/features/social/social-api'
+import { apiRequest } from '@/lib/api'
+import { useQueryClient } from '@tanstack/react-query'
 
 const DAY_LETTERS = ['M', 'T', 'W', 'T', 'F', 'S', 'S']
 const DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -206,6 +209,27 @@ export default function OnboardingScreen() {
     )
   }
 
+  /*
+   * "Invite a friend" used to mean only that the circle tab opened afterwards, where a circle
+   * still had to be named and an invite asked for — so finishing onboarding shared nothing.
+   * Now it makes the circle, named after them, and opens the share sheet with the invite link.
+   * If either step fails, setup still finishes: the circle tab offers both again.
+   */
+  const queryClient = useQueryClient()
+  const inviteFirstFriend = async () => {
+    try {
+      const name = draft.displayName.trim()
+      const created = await apiRequest<{ id: string }>('/v1/circles', {
+        method: 'POST',
+        body: JSON.stringify({ name: (name.length >= 2 ? `${name}’s circle` : 'Our circle').slice(0, 48) }),
+      })
+      await queryClient.invalidateQueries({ queryKey: ['circles'] })
+      await shareCircleInvite(created.id)
+    } catch {
+      // Nothing to undo; the circle tab picks it up from here.
+    }
+  }
+
   const chooseReminder = async () => {
     if (enablingReminder) return
     setEnablingReminder(true)
@@ -229,6 +253,7 @@ export default function OnboardingScreen() {
     try {
       await syncOnboardingDraft(draft)
       await completeOnboarding(draft)
+      if (draft.inviteAfterSetup) await inviteFirstFriend()
       router.replace(draft.inviteAfterSetup ? '/(tabs)/circle' : '/(tabs)')
     } catch (error) {
       setFinishError(error instanceof Error ? error.message : 'Your choices are saved. Check your connection.')
@@ -289,23 +314,27 @@ export default function OnboardingScreen() {
 
           {/* ── The constant. ── */}
           <View style={[styles.ringStage, compact && styles.ringStageCompact]}>
+            {/* The halo and the rings share one box the halo's size, centred the same way on every
+                platform. The halo used to be absolute inside the padded stage, which Android
+                centres on the padding box and the web on the content box: a few pixels off. */}
             <View
               style={[
-                styles.halo,
-                {
-                  width: ringSize * 1.12,
-                  height: ringSize * 1.12,
-                  borderRadius: ringSize,
-                  backgroundColor: draft.previewCompleted ? colors.kiwiTint : colors.surfaceSunken,
-                },
+                styles.ringBox,
+                { width: ringSize * 1.12, height: ringSize * 1.12, borderRadius: ringSize * 0.56 },
+                { backgroundColor: draft.previewCompleted ? colors.kiwiTint : colors.surfaceSunken },
               ]}
-            />
-            <Rings size={ringSize} {...rings} label={`Setup progress, step ${draft.step + 1} of ${STEP_LABELS.length}`}>
-              <Object3D
-                name={draft.step === LAST_STEP ? 'party' : draft.previewCompleted ? 'check' : 'seedling'}
-                size={ringSize * 0.17}
-              />
-            </Rings>
+            >
+              <Rings
+                size={ringSize}
+                {...rings}
+                label={`Setup progress, step ${draft.step + 1} of ${STEP_LABELS.length}`}
+              >
+                <Object3D
+                  name={draft.step === LAST_STEP ? 'party' : draft.previewCompleted ? 'check' : 'seedling'}
+                  size={ringSize * 0.17}
+                />
+              </Rings>
+            </View>
           </View>
 
           <Animated.View
@@ -778,7 +807,7 @@ function Ready({
       ) : null}
 
       <Button
-        label={finishing ? 'Saving…' : draft.inviteAfterSetup ? 'Open my circle' : 'See my week'}
+        label={finishing ? 'Saving…' : draft.inviteAfterSetup ? 'Invite my friend' : 'See my week'}
         icon="arrowRight"
         onPress={onFinish}
         disabled={finishing || enablingReminder}
@@ -804,7 +833,7 @@ const useStyles = makeThemedStyles((colors) =>
 
     ringStage: { alignItems: 'center', justifyContent: 'center', paddingTop: space[4], paddingBottom: space[6] },
     ringStageCompact: { paddingTop: space[1], paddingBottom: space[4] },
-    halo: { position: 'absolute' },
+    ringBox: { alignItems: 'center', justifyContent: 'center' },
 
     page: { flex: 1 },
     step: { gap: space[4], alignItems: 'stretch' },

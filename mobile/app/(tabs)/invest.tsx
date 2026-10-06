@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import { AppHeader } from '@/components/app-header'
 import { Button, Card, Chip, PressableCard, Row, Screen, SectionHeader, Sheet, T, type Tone } from '@/components/ui'
 import { space } from '@/constants/theme'
@@ -16,7 +16,7 @@ import { useNetwork } from '@/features/network/use-network'
 
 type ShelfAsset = InvestableAsset & {
   kind: string
-  shelf: 'public' | 'crypto' | 'private'
+  shelf: 'crypto' | 'public'
   tone: Tone
 }
 
@@ -25,51 +25,6 @@ type ShelfAsset = InvestableAsset & {
  * entries carry the framing — what the thing is, in three words.
  */
 const SHELF: ShelfAsset[] = [
-  {
-    symbol: 'SPYx',
-    name: 'S&P 500',
-    kind: 'Broad market',
-    shelf: 'public',
-    tone: 'kiwi',
-    mint: '',
-    logo: '',
-    description: '',
-    available: false,
-    supportsAtomicSwaps: false,
-    provider: 'xstocks',
-    instrument: 'tokenized_stock',
-    transferFeeBps: 0,
-  },
-  {
-    symbol: 'QQQx',
-    name: 'Nasdaq 100',
-    kind: 'Technology tilt',
-    shelf: 'public',
-    tone: 'sky',
-    mint: '',
-    logo: '',
-    description: '',
-    available: false,
-    supportsAtomicSwaps: false,
-    provider: 'xstocks',
-    instrument: 'tokenized_stock',
-    transferFeeBps: 0,
-  },
-  {
-    symbol: 'TSLAx',
-    name: 'Tesla',
-    kind: 'Single company',
-    shelf: 'public',
-    tone: 'coral',
-    mint: '',
-    logo: '',
-    description: '',
-    available: false,
-    supportsAtomicSwaps: false,
-    provider: 'xstocks',
-    instrument: 'tokenized_stock',
-    transferFeeBps: 0,
-  },
   {
     symbol: 'SOL',
     name: 'Solana',
@@ -116,49 +71,49 @@ const SHELF: ShelfAsset[] = [
     transferFeeBps: 0,
   },
   {
-    symbol: 'tOpenAI',
-    name: 'OpenAI',
-    kind: 'Pre-IPO exposure',
-    shelf: 'private',
-    tone: 'grape',
-    mint: 'oPAiAikWTaFj9RYoRFD35ccfwhnMcB3ThgBZRHSkjTZ',
+    symbol: 'SPYx',
+    name: 'S&P 500',
+    kind: 'Broad market',
+    shelf: 'public',
+    tone: 'kiwi',
+    mint: '',
     logo: '',
-    description: "Loan participation right linked to OpenAI's pre-IPO valuation.",
-    available: true,
+    description: '',
+    available: false,
     supportsAtomicSwaps: false,
-    provider: 'tessera',
-    instrument: 'loan_participation',
-    transferFeeBps: 20,
+    provider: 'xstocks',
+    instrument: 'tokenized_stock',
+    transferFeeBps: 0,
   },
   {
-    symbol: 'tKalshi',
-    name: 'Kalshi',
-    kind: 'Pre-IPO exposure',
-    shelf: 'private',
-    tone: 'sun',
-    mint: 'TKLSidmLVt3cqGaaodG8tyRzoANfQwoh67AccjmubeZ',
-    logo: '',
-    description: "Loan participation right linked to Kalshi's pre-IPO valuation.",
-    available: true,
-    supportsAtomicSwaps: false,
-    provider: 'tessera',
-    instrument: 'loan_participation',
-    transferFeeBps: 20,
-  },
-  {
-    symbol: 'tSpaceX',
-    name: 'SpaceX',
-    kind: 'Pre-IPO exposure',
-    shelf: 'private',
+    symbol: 'QQQx',
+    name: 'Nasdaq 100',
+    kind: 'Technology tilt',
+    shelf: 'public',
     tone: 'sky',
-    mint: 'TSPXcLV76s6V2zDiZQ18kBfcbnjaE2ZzNT3ga2Pd99v',
+    mint: '',
     logo: '',
-    description: "Loan participation right linked to SpaceX's pre-IPO valuation.",
-    available: true,
+    description: '',
+    available: false,
     supportsAtomicSwaps: false,
-    provider: 'tessera',
-    instrument: 'loan_participation',
-    transferFeeBps: 20,
+    provider: 'xstocks',
+    instrument: 'tokenized_stock',
+    transferFeeBps: 0,
+  },
+  {
+    symbol: 'TSLAx',
+    name: 'Tesla',
+    kind: 'Single company',
+    shelf: 'public',
+    tone: 'coral',
+    mint: '',
+    logo: '',
+    description: '',
+    available: false,
+    supportsAtomicSwaps: false,
+    provider: 'xstocks',
+    instrument: 'tokenized_stock',
+    transferFeeBps: 0,
   },
 ]
 
@@ -214,25 +169,20 @@ export default function InvestScreen() {
         </PressableCard>
 
         <Shelf
-          title="Public markets"
-          badge="xStocks"
-          assets={assets.filter((asset) => asset.shelf === 'public')}
-          onSelect={openAsset}
-          onSeeAll={() => router.push('/markets')}
-        />
-
-        <Shelf
           title="Crypto"
           badge="On Solana"
           assets={assets.filter((asset) => asset.shelf === 'crypto')}
           onSelect={openAsset}
+          loading={catalog.isPending}
         />
 
         <Shelf
-          title="Private markets"
-          badge="Tessera"
-          assets={assets.filter((asset) => asset.shelf === 'private')}
+          title="Public markets"
+          badge="xStocks"
+          assets={assets.filter((asset) => asset.shelf === 'public')}
           onSelect={openAsset}
+          loading={catalog.isPending}
+          onSeeAll={() => router.push('/markets')}
         />
 
         <PressableCard
@@ -246,7 +196,7 @@ export default function InvestScreen() {
               Browse all markets
             </T>
             <T role="caption" color={colors.inkFaint}>
-              Stocks, crypto and private markets, live prices, no wallet needed
+              Crypto and stocks, live prices, no wallet needed
             </T>
           </View>
           <Icon name="chevronRight" size={18} color={colors.inkFaint} />
@@ -290,10 +240,6 @@ export default function InvestScreen() {
             title="Crypto moves fast"
             body="SOL, bitcoin and SKR can rise or fall sharply, often within a day. cbBTC also depends on Coinbase holding the bitcoin behind it."
           />
-          <RiskNote
-            title="T-Tokens are not shares"
-            body="Tessera T-Tokens are high-risk loan participation rights with a fee on sale or transfer, and may be restricted where you live."
-          />
         </View>
         <Button label="Got it" variant="secondary" onPress={() => setRisksOpen(false)} />
       </Sheet>
@@ -307,12 +253,15 @@ function Shelf({
   assets,
   onSelect,
   onSeeAll,
+  loading = false,
 }: {
   title: string
   badge: string
   assets: ShelfAsset[]
   onSelect: (asset: ShelfAsset) => void
   onSeeAll?: () => void
+  /** The catalogue has not answered yet: show that it is coming, not that the asset is. */
+  loading?: boolean
 }) {
   const { colors } = useAppTheme()
   const styles = useStyles()
@@ -331,7 +280,8 @@ function Shelf({
       />
       <View style={styles.assets}>
         {assets.map((asset) => {
-          // An unlisted asset stays fully legible — the "Soon" chip carries the state, so
+          // An unlisted asset stays fully legible — the "Soon" chip carries the state (and only
+          // once the catalogue has answered; before that a spinner says it is loading), so
           // dimming the row as well would just make the shelf hard to read.
           const body = (
             <>
@@ -358,7 +308,9 @@ function Shelf({
                   </T>
                 ) : null}
               </View>
-              {asset.available ? (
+              {loading && asset.priceUsd == null ? (
+                <ActivityIndicator size="small" color={colors.inkFaint} accessibilityLabel="Loading price" />
+              ) : asset.available ? (
                 <Icon name="chevronRight" size={18} color={colors.inkFaint} />
               ) : (
                 <Chip label="Soon" tone="neutral" />

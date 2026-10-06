@@ -221,36 +221,38 @@ export function useCreateStarterGoal() {
   })
 }
 
+/** Makes an invite for a circle and opens the share sheet with it. */
+export async function shareCircleInvite(circleId: string) {
+  const result = await apiRequest<{ invite: { deepLink: string; webUrl: string } }>(`/v1/circles/${circleId}/invites`, {
+    method: 'POST',
+    body: JSON.stringify({ expiresInHours: 72, maxUses: 5 }),
+  })
+  // The one piece of copy that leaves the app and lands in someone else's messages, so
+  // it gets the most care: what it is, what it costs them, what stays private, then the
+  // link on its own line where every messaging app will make it tappable.
+  //
+  // Only the https link is sent. It is an Android App Link, so on a phone that has KEPT
+  // it opens the join screen directly, and on one that does not it opens the web page
+  // rather than failing silently the way a bare `keptseeker://` link would.
+  await Share.share({
+    title: 'Join my circle on KEPT',
+    message: [
+      'Join my circle on KEPT.',
+      '',
+      'We each invest a little every week and keep each other to it. Your circle sees that you showed up — never how much.',
+      '',
+      result.invite.webUrl,
+    ].join('\n'),
+    url: result.invite.webUrl,
+  })
+  return result.invite
+}
+
 export function useShareInvite(circleId?: string) {
   return useMutation({
     mutationFn: async () => {
       if (!circleId) throw new Error('Create a circle before inviting friends.')
-      const result = await apiRequest<{ invite: { deepLink: string; webUrl: string } }>(
-        `/v1/circles/${circleId}/invites`,
-        {
-          method: 'POST',
-          body: JSON.stringify({ expiresInHours: 72, maxUses: 5 }),
-        },
-      )
-      // The one piece of copy that leaves the app and lands in someone else's messages, so
-      // it gets the most care: what it is, what it costs them, what stays private, then the
-      // link on its own line where every messaging app will make it tappable.
-      //
-      // Only the https link is sent. It is an Android App Link, so on a phone that has KEPT
-      // it opens the join screen directly, and on one that does not it opens the web page
-      // rather than failing silently the way a bare `keptseeker://` link would.
-      await Share.share({
-        title: 'Join my circle on KEPT',
-        message: [
-          'Join my circle on KEPT.',
-          '',
-          'We each invest a little every week and keep each other to it. Your circle sees that you showed up — never how much.',
-          '',
-          result.invite.webUrl,
-        ].join('\n'),
-        url: result.invite.webUrl,
-      })
-      return result.invite
+      return shareCircleInvite(circleId)
     },
   })
 }

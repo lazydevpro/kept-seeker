@@ -42,15 +42,15 @@ const CATALOG_TTL_MS = 60 * 60 * 1000;
  * index funds they sit next to.
  */
 const FEATURED = [
+  "SOL",
+  "cbBTC",
+  "SKR",
   "SPYx",
   "QQQx",
   "VOOx",
   "tOpenAI",
   "tSpaceX",
   "tKalshi",
-  "SOL",
-  "cbBTC",
-  "SKR",
   "NVDAx",
   "AAPLx",
   "MSFTx",
@@ -182,6 +182,17 @@ const CRYPTO_ASSETS: readonly InvestableAsset[] = [
   instrument: "crypto" as const,
   transferFeeBps: 0,
 }));
+
+/**
+ * Private markets (Tessera T-Tokens) are off unless PRIVATE_MARKETS is "on". They are loan
+ * participation rights, close enough to securities that the Solana dApp Store's terms (§5.4.16)
+ * and the Seeker build keep them out: not listed, not in the catalog, not buyable. Selling one
+ * already held is never blocked, so a holding can always be left.
+ */
+export const privateMarketsOn = (env: AppEnv) =>
+  String(
+    (env as unknown as { PRIVATE_MARKETS?: string }).PRIVATE_MARKETS ?? "off",
+  ) === "on";
 
 function findCryptoAsset(symbol: string) {
   const wanted = symbol.trim().toUpperCase();
@@ -458,7 +469,10 @@ function mapXStocksAsset(asset: XStocksAsset): InvestableAsset | null {
   };
 }
 
-async function getInvestableAssets(requestedSymbols: string[]) {
+async function getInvestableAssets(
+  requestedSymbols: string[],
+  privateMarkets: boolean,
+) {
   const requested = new Set(
     requestedSymbols.map((symbol) => symbol.trim().toUpperCase()),
   );
@@ -467,7 +481,7 @@ async function getInvestableAssets(requestedSymbols: string[]) {
   );
   for (const asset of crypto) requested.delete(asset.symbol.toUpperCase());
   if (!requested.size) return crypto;
-  const tessera = await getTesseraAssets();
+  const tessera = privateMarkets ? await getTesseraAssets() : [];
   const tesseraAssets = tessera.filter((asset) =>
     requested.has(asset.symbol.toUpperCase()),
   );
@@ -486,10 +500,10 @@ async function getInvestableAssets(requestedSymbols: string[]) {
   ];
 }
 
-async function findInvestableAsset(symbol: string) {
+async function findInvestableAsset(symbol: string, privateMarkets: boolean) {
   const cryptoAsset = findCryptoAsset(symbol);
   if (cryptoAsset) return cryptoAsset;
-  const tesseraAsset = await findTesseraAsset(symbol);
+  const tesseraAsset = privateMarkets ? await findTesseraAsset(symbol) : null;
   if (tesseraAsset) return tesseraAsset;
   const xStock = (await getXStocksAssets()).find(
     (asset) => asset.symbol.toUpperCase() === symbol.trim().toUpperCase(),
@@ -525,12 +539,10 @@ export const tradeRoutes = new Hono<{
 }>();
 
 tradeRoutes.get("/assets", async (c) => {
-  const requested = (
-    c.req.query("symbols") ?? "SPYx,QQQx,TSLAx,tOpenAI,tKalshi,tSpaceX"
-  )
+  const requested = (c.req.query("symbols") ?? "SOL,cbBTC,SKR,SPYx,QQQx,TSLAx")
     .split(",")
     .slice(0, 12);
-  const assets = await getInvestableAssets(requested);
+  const assets = await getInvestableAssets(requested, privateMarketsOn(c.env));
   const quotes = await fetchQuotes(
     c.env,
     assets.map((asset) => asset.mint),
@@ -560,7 +572,7 @@ tradeRoutes.get("/catalog", async (c) => {
   const page = Math.max(Number(c.req.query("page") ?? 0), 0);
 
   const [tessera, xStocksRaw] = await Promise.all([
-    getTesseraAssets(),
+    privateMarketsOn(c.env) ? getTesseraAssets() : Promise.resolve([]),
     getXStocksAssets(),
   ]);
   const xStocks = xStocksRaw
@@ -956,7 +968,10 @@ tradeRoutes.post("/order", async (c) => {
     .first();
   if (!wallet)
     throw new ApiError(403, "Verify this wallet before requesting an order.");
-  const asset = await findInvestableAsset(body.outputSymbol);
+  const asset = await findInvestableAsset(
+    body.outputSymbol,
+    privateMarketsOn(c.env),
+  );
   if (!asset || asset.mint !== body.outputMint || !asset.available) {
     throw new ApiError(422, "This asset is not currently available on Solana.");
   }

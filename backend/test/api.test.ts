@@ -8,6 +8,7 @@ import {
 } from "../src/jobs";
 import { LIMITS, rateLimit } from "../src/lib/rate-limit";
 import { app } from "../src/app";
+import { privateMarketsOn } from "../src/routes/trades";
 import { isNightlyTick } from "../src/index";
 import type { AppEnv, Job, Variables } from "../src/types";
 import { ed25519 } from "@noble/curves/ed25519.js";
@@ -1177,6 +1178,17 @@ describe("Launch readiness", () => {
       body: JSON.stringify({ version: before.current, acceptTerms: true }),
     });
     expect(bare.status).toBe(422);
+  });
+
+  it("keeps private markets off unless PRIVATE_MARKETS is exactly on", () => {
+    const withFlag = (value?: string) =>
+      ({
+        ...(value === undefined ? {} : { PRIVATE_MARKETS: value }),
+      }) as unknown as AppEnv;
+    expect(privateMarketsOn(withFlag())).toBe(false);
+    expect(privateMarketsOn(withFlag("off"))).toBe(false);
+    expect(privateMarketsOn(withFlag("true"))).toBe(false);
+    expect(privateMarketsOn(withFlag("on"))).toBe(true);
   });
 
   it('does not name every anonymous account "Anonymous"', async () => {
