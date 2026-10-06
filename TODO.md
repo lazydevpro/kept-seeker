@@ -11,14 +11,15 @@ Plan: [docs/plans/clock-in-submission.md](docs/plans/clock-in-submission.md). Ow
       disabled locally while its review runs. Pending work committed and pushed #clockin
 - [x] A stack of its own: `kept-seeker-api` (+ D1 `kept-seeker-production`, queue
       `kept-seeker-jobs`), `kept-seeker.pages.dev` (+ KV), app `com.lazydevpro.keptseeker` 1.1.0 #clockin
-- [ ] Owner: secrets (new Jupiter key, new RPC URL, auth secret), `deploy:production`, site deploy,
-      `eas init` + first production build (new keystore) — the deploy was refused to Claude #clockin
+- [x] API live on its own Cloudflare account: `kept-seeker-api.keptseeker.workers.dev`, cron on,
+      migrations 0001–0011, secrets set (auth, Jupiter, RPC) #clockin
+- [ ] Owner: `npm run release:key` (back up `~/.kept-seeker/android/`), then the site deploy #clockin
 - [ ] Put the new key's SHA-256 in `web/public/.well-known/assetlinks.json`, redeploy the site #web
 - [x] Fresh-clone check: CI on the new repo runs `npm ci` + every gate on a clean runner — green #verify
-- [ ] README: a Clock In block at the top (APK, video, deck, install, run locally) #clockin
+- [x] README: a Clock In block at the top (APK, video, deck, install, run locally) #clockin
 - [ ] Device pass on a phone with $1 real money (the open #verify item below) #verify
 - [ ] v1.0.2 APK from the submitted commit, if the app changed since v1.0.1 #mobile
-- [ ] Demo video, 2:45: film hook + narrated phone recording + end card (`video/`) #film
+- [ ] Demo video, 2:45: script and shot list in `docs/demo-video.md`; record Wed, assemble Thu #film
 - [ ] Deck pass against the four criteria; re-export `docs/kept-deck.pdf` #deck
 - [ ] Draft on Align, run the AI Coach, final submit #clockin
 - [ ] After a win: live on the Solana dApp Store by 10 Dec #launch
