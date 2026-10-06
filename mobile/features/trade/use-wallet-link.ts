@@ -19,7 +19,7 @@ import { Base64 } from 'js-base64'
 import { useState } from 'react'
 import { Alert } from 'react-native'
 import { useQueryClient } from '@tanstack/react-query'
-import { useMobileWallet } from '@wallet-ui/react-native-kit'
+import { useWallet } from '@/features/demo/demo-wallet'
 import { ApiClientError, apiRequest } from '@/lib/api'
 import { confirmAsync } from '@/lib/confirm'
 import { useMe } from '@/features/social/social-api'
@@ -27,7 +27,7 @@ import { type SignedChallenge, signInWithWallet, WalletNotLinkedError } from '@/
 import { markOnboardingComplete } from '@/features/onboarding/onboarding-state'
 
 export function useWalletLink() {
-  const { account, connect, signMessages } = useMobileWallet()
+  const { account, connect, signMessages } = useWallet()
   const me = useMe()
   const client = useQueryClient()
   const [connecting, setConnecting] = useState(false)

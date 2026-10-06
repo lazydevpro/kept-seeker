@@ -218,6 +218,39 @@ async function verifyContribution(env: AppEnv, contributionId: string) {
     .first();
   if (!contribution) return;
 
+  /*
+   * A demo purchase (see `demo` in routes/trades.ts) never touched a chain, so there
+   * is nothing to read back: it settles as exactly what was quoted. Only a local
+   * server can create one, and only a local server will settle one.
+   */
+  if (String(contribution.execution_mode) === "demo") {
+    if (env.ENVIRONMENT !== "local") {
+      await env.DB.prepare(
+        "UPDATE contributions SET status = 'rejected', failure_reason = ? WHERE id = ? AND status = 'pending'",
+      )
+        .bind("Demo purchases only settle on a local server.", contributionId)
+        .run();
+      return;
+    }
+    // From here it reads as an ordinary purchase: the portfolio, the widget and the
+    // home screen count only live ones. Its `demo` signature still says what it was.
+    await env.DB.prepare(
+      "UPDATE contributions SET execution_mode = 'live' WHERE id = ? AND status = 'pending'",
+    )
+      .bind(contributionId)
+      .run();
+    await settle(env, contribution, contributionId, {
+      occurredAt: new Date().toISOString(),
+      moved: BigInt(String(contribution.amount_base_units ?? "0")),
+      decimals:
+        contribution.asset_decimals == null
+          ? null
+          : Number(contribution.asset_decimals),
+      selling: false,
+    });
+    return;
+  }
+
   const transaction = await rpc<RpcTransaction | null>(env, "getTransaction", [
     contribution.signature,
     {
@@ -301,6 +334,31 @@ async function verifyContribution(env: AppEnv, contributionId: string) {
     ? new Date(transaction.blockTime * 1000).toISOString()
     : new Date().toISOString();
 
+  await settle(env, contribution, contributionId, {
+    occurredAt,
+    moved,
+    decimals: decimals ?? null,
+    selling,
+  });
+}
+
+/** Marks a checked contribution verified, then does everything keeping a promise sets off. */
+async function settle(
+  env: AppEnv,
+  contribution: Record<string, unknown>,
+  contributionId: string,
+  {
+    occurredAt,
+    moved,
+    decimals,
+    selling,
+  }: {
+    occurredAt: string;
+    moved: bigint;
+    decimals: number | null;
+    selling: boolean;
+  },
+) {
   /*
    * `AND status = 'pending'` makes this the claim. The sweeper re-queues rows
    * that look stuck, so the same contribution can be verified by two consumers

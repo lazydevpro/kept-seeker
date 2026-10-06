@@ -879,6 +879,7 @@ tradeRoutes.post("/order", async (c) => {
       taker: z.string().min(32).max(44),
       goalId: z.string().optional(),
       tesseraAcknowledged: z.boolean().optional(),
+      demo: z.boolean().optional(),
     }),
   );
   const wallet = await c.env.DB.prepare(
@@ -912,6 +913,56 @@ tradeRoutes.post("/order", async (c) => {
       "terms_required",
     );
   const amount = String(Math.round(body.amountUsdc * 1_000_000));
+  /*
+   * Demo mode, for recording the app in a browser (mobile `features/demo`). Only a
+   * local server honours it. Nothing is signed and nothing touches a chain, but the
+   * order is priced with a real quote, so what the screen says it bought is what
+   * that money would have bought today.
+   */
+  if (body.demo) {
+    if (c.env.ENVIRONMENT !== "local")
+      throw new ApiError(
+        422,
+        "Demo orders only exist on a local server.",
+        "demo_unavailable",
+      );
+    const quote = await priceRoute(c.env, SOLANA_USDC, body.outputMint, amount);
+    const requestId = id("demo_order");
+    const expiresAt = new Date(Date.now() + 5 * 60_000).toISOString();
+    await c.env.DB.prepare(
+      `INSERT INTO trade_orders (request_id, user_id, wallet_address, input_mint, output_mint, input_amount, expected_output_amount, output_symbol, goal_id, expires_at, execution_mode)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'demo')`,
+    )
+      .bind(
+        requestId,
+        c.get("userId"),
+        body.taker,
+        SOLANA_USDC,
+        body.outputMint,
+        amount,
+        String(quote.outAmount ?? "0"),
+        body.outputSymbol,
+        body.goalId ?? null,
+        expiresAt,
+      )
+      .run();
+    return c.json({
+      order: {
+        transaction: null,
+        requestId,
+        inAmount: amount,
+        outAmount: String(quote.outAmount ?? "0"),
+        inUsdValue: body.amountUsdc,
+        outUsdValue: body.amountUsdc,
+        priceImpact: 0,
+        router: routeLabel(quote) ?? "Jupiter",
+        mode: "live",
+        feeBps: 0,
+        feeMint: SOLANA_USDC,
+        expireAt: expiresAt,
+      } satisfies OrderResponse,
+    });
+  }
   if (String(c.env.SOLANA_CLUSTER) !== "mainnet-beta") {
     const requestId = id("sandbox_order");
     // Renaming this prefix is safe, which is not obvious: verification compares
@@ -1147,6 +1198,48 @@ tradeRoutes.post("/execute", async (c) => {
     .first();
   if (!order)
     throw new ApiError(404, "This order is unavailable or was already used.");
+  if (String(order.execution_mode) === "demo") {
+    if (c.env.ENVIRONMENT !== "local")
+      throw new ApiError(404, "This order is unavailable or was already used.");
+    const contributionId = id("contribution");
+    const tokens = await fetchTokens(c.env, [String(order.output_mint)]);
+    const signature = `demo${crypto.randomUUID().replaceAll("-", "")}`;
+    await c.env.DB.batch([
+      c.env.DB.prepare(
+        "UPDATE trade_orders SET executed_at = CURRENT_TIMESTAMP WHERE request_id = ?",
+      ).bind(body.requestId),
+      c.env.DB.prepare(
+        `INSERT INTO contributions (id, user_id, goal_id, wallet_address, signature, asset_symbol, asset_mint, amount_base_units, execution_mode, input_amount_usdc_base_units, asset_decimals)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'demo', ?, ?)`,
+      ).bind(
+        contributionId,
+        c.get("userId"),
+        order.goal_id,
+        order.wallet_address,
+        signature,
+        order.output_symbol,
+        order.output_mint,
+        order.expected_output_amount,
+        order.input_amount,
+        tokens[String(order.output_mint)]?.decimals ?? null,
+      ),
+    ]);
+    await c.env.JOBS.send({
+      kind: "verify_contribution",
+      contributionId,
+    } satisfies Job);
+    return c.json({
+      result: {
+        status: "Success",
+        signature,
+        code: 0,
+        totalInputAmount: String(order.input_amount),
+        totalOutputAmount: String(order.expected_output_amount),
+      },
+      contributionId,
+      mode: "live",
+    });
+  }
   if (String(order.execution_mode) === "sandbox") {
     if (new Date(String(order.expires_at)).getTime() <= Date.now())
       throw new ApiError(

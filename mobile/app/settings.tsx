@@ -15,7 +15,7 @@ import { useRouter } from 'expo-router'
 import * as WebBrowser from 'expo-web-browser'
 import { useState } from 'react'
 import { Alert, StyleSheet, TextInput, View } from 'react-native'
-import { useMobileWallet } from '@wallet-ui/react-native-kit'
+import { useWallet } from '@/features/demo/demo-wallet'
 import { Button, Card, IconButton, ListRow, Row, Screen, SectionHeader, T } from '@/components/ui'
 import { makeThemedStyles, useAppTheme } from '@/components/theme-provider'
 import { radii, space, type } from '@/constants/theme'
@@ -41,7 +41,7 @@ export default function SettingsScreen() {
   const { colors, mode, toggleTheme } = useAppTheme()
   const me = useMe()
   const circles = useCircles()
-  const wallet = useMobileWallet()
+  const wallet = useWallet()
   const signOut = useSignOut()
   const deleteAccount = useDeleteAccount()
   const unlink = useUnlinkWallet()

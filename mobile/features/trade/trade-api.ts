@@ -1,5 +1,6 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query'
 import { apiRequest } from '@/lib/api'
+import { DEMO } from '@/features/demo/demo'
 
 export interface InvestableAsset {
   name: string
@@ -142,7 +143,11 @@ export function requestTradeOrder(input: {
   goalId?: string
   tesseraAcknowledged?: boolean
 }) {
-  return apiRequest<{ order: TradeOrder }>('/v1/trades/order', { method: 'POST', body: JSON.stringify(input) })
+  // A demo order is priced for real and never sent to a chain; only a local server takes one.
+  return apiRequest<{ order: TradeOrder }>('/v1/trades/order', {
+    method: 'POST',
+    body: JSON.stringify(DEMO ? { ...input, demo: true } : input),
+  })
 }
 
 /**

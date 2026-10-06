@@ -20,7 +20,7 @@ import { getTransactionDecoder, getTransactionEncoder } from '@solana/kit'
 import { Base64 } from 'js-base64'
 import { useEffect, useState } from 'react'
 import { ActivityIndicator, Alert, Pressable, StyleSheet, TextInput, View } from 'react-native'
-import { useMobileWallet } from '@wallet-ui/react-native-kit'
+import { useWallet } from '@/features/demo/demo-wallet'
 import { Button, Chip, Row, Sheet, T } from '@/components/ui'
 import { radii, space, type } from '@/constants/theme'
 import { makeThemedStyles, useAppTheme } from '@/components/theme-provider'
@@ -42,6 +42,10 @@ import {
 import { useWalletLink } from './use-wallet-link'
 import { KeptMoment } from './kept-moment'
 import { useSettlementWatch } from './settlement'
+import { DEMO, walletPause } from '@/features/demo/demo'
+
+/** A demo order carries no transaction; the server only needs the field to be there. */
+const DEMO_SIGNED = 'demo'.padEnd(120, '0')
 
 /** Matches the server's guard. A ceiling against a slipped decimal, not a cap on ambition. */
 const MIN_USDC = 1
@@ -69,7 +73,7 @@ const listOf = (items: string[]) =>
 export function PurchaseSheet({ asset, onClose }: { asset: InvestableAsset | null; onClose: () => void }) {
   const { colors } = useAppTheme()
   const styles = useStyles()
-  const { signTransactions } = useMobileWallet()
+  const { signTransactions } = useWallet()
   const { account, linked, connecting, linkWallet } = useWalletLink()
   const watchSettlement = useSettlementWatch()
   const [done, setDone] = useState<{ receives: string | null; rehearsal: boolean } | null>(null)
@@ -155,13 +159,17 @@ export function PurchaseSheet({ asset, onClose }: { asset: InvestableAsset | nul
     if (!order || !asset) return
     setTrading(true)
     try {
-      const transaction = getTransactionDecoder().decode(Base64.toUint8Array(order.transaction))
-      const signed = await signTransactions(transaction)
-      const encoded = getTransactionEncoder().encode(signed)
-      const execution = await executeTrade({
-        requestId: order.requestId,
-        signedTransaction: Base64.fromUint8Array(new Uint8Array(encoded)),
-      })
+      let signedTransaction: string
+      if (DEMO) {
+        // No wallet app and no chain: the pause where one would be approving it.
+        await walletPause(1200)
+        signedTransaction = DEMO_SIGNED
+      } else {
+        const transaction = getTransactionDecoder().decode(Base64.toUint8Array(order.transaction))
+        const signed = await signTransactions(transaction)
+        signedTransaction = Base64.fromUint8Array(new Uint8Array(getTransactionEncoder().encode(signed)))
+      }
+      const execution = await executeTrade({ requestId: order.requestId, signedTransaction })
       /*
        * Two stages. This one is instant and optimistic — the ring closes the
        * moment the wallet returns a signature. The chain has not been asked yet,

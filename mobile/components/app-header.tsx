@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { useMobileWallet } from '@wallet-ui/react-native-kit'
+import { useWallet } from '@/features/demo/demo-wallet'
 import { motion, radii, space, type } from '@/constants/theme'
 import { makeThemedStyles, useAppTheme } from '@/components/theme-provider'
 import { IconButton, T } from '@/components/ui'
@@ -20,7 +20,7 @@ function truncate(value: string) {
  * inside it. Appearance is set once; the way out has to be findable from every tab.
  */
 export function AppHeader({ title, eyebrow }: { title: string; eyebrow?: string }) {
-  const { account, connect } = useMobileWallet()
+  const { account, connect } = useWallet()
   const { colors } = useAppTheme()
   const styles = useStyles()
   const router = useRouter()

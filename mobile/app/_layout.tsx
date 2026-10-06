@@ -19,6 +19,7 @@ import { AppProviders } from '@/components/app-providers'
 import { useAppTheme } from '@/components/theme-provider'
 import { darkColors, lightColors } from '@/constants/theme'
 import { AnimatedSplash } from '@/features/splash/animated-splash'
+import '@/features/demo/demo'
 
 // Hold the native splash until the fonts are in. Without this it hides on the first frame,
 // which is the frame this layout renders nothing on — so the opening was a cream field, a

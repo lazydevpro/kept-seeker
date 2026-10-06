@@ -13,6 +13,7 @@
     "db:migrate:local": "wrangler d1 migrations apply DB --local",
     "db:seed:local": "wrangler d1 execute DB --local --file=./seed.sql",
     "db:seed:demo": "node ./scripts/seed-demo.mjs",
+    "db:seed:circle": "node ./scripts/seed-demo.mjs --circle-only",
     "deploy": "node ./scripts/deploy-guard.mjs",
     "deploy:staging": "npm run check && wrangler d1 migrations apply DB --env staging --remote && wrangler deploy --env staging",
     "deploy:production": "npm run check && wrangler d1 migrations apply DB --env production --remote && wrangler deploy --env production",

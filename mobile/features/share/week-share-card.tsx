@@ -20,7 +20,7 @@
 
 import * as Sharing from 'expo-sharing'
 import { useCallback, useRef, useState } from 'react'
-import { Share, StyleSheet, View } from 'react-native'
+import { Platform, Share, StyleSheet, View } from 'react-native'
 import { captureRef } from 'react-native-view-shot'
 import { T } from '@/components/ui'
 import { makeThemedStyles, useAppTheme } from '@/components/theme-provider'
@@ -65,7 +65,9 @@ export function WeekShareCard({ data, cardRef }: { data: WeekShareData; cardRef:
     // Off to the side rather than hidden: a view with zero opacity captures as a
     // transparent bitmap, and one that is not laid out captures as nothing at all.
     <View style={styles.stage} pointerEvents="none">
-      <View ref={cardRef} collapsable={false} style={styles.card}>
+      {/* `collapsable` is Android's: without it the capture target can be flattened away.
+          The web renderer passes it to the DOM as an invalid attribute, so it stays off there. */}
+      <View ref={cardRef} collapsable={Platform.OS === 'web' ? undefined : false} style={styles.card}>
         <T role="eyebrow" color={colors.inkFaint}>
           KEPT
         </T>

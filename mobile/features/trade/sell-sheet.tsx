@@ -2,7 +2,7 @@ import { Base64 } from 'js-base64'
 import { useEffect, useMemo, useState } from 'react'
 import { Alert, StyleSheet, TextInput, View } from 'react-native'
 import { getTransactionDecoder, getTransactionEncoder } from '@solana/kit'
-import { useMobileWallet } from '@wallet-ui/react-native-kit'
+import { useWallet } from '@/features/demo/demo-wallet'
 import { Button, Chip, Row, Sheet, T } from '@/components/ui'
 import { makeThemedStyles, useAppTheme } from '@/components/theme-provider'
 import { radii, space } from '@/constants/theme'
@@ -37,7 +37,7 @@ const PRESETS = [0.25, 0.5, 1] as const
 export function SellSheet({ position, onClose }: { position: Position | null; onClose: () => void }) {
   const { colors } = useAppTheme()
   const styles = useStyles()
-  const { signTransactions } = useMobileWallet()
+  const { signTransactions } = useWallet()
   const { account, linked, connecting, linkWallet } = useWalletLink()
   const watchSettlement = useSettlementWatch()
 
