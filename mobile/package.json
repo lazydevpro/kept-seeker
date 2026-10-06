@@ -18,7 +18,8 @@
     "start": "expo start",
     "web": "expo start --web",
     "deploy:web": "expo export --platform web --output-dir dist && wrangler deploy",
-    "preview:web": "expo export --platform web --output-dir dist && wrangler dev"
+    "preview:web": "expo export --platform web --output-dir dist && wrangler dev",
+    "release:key": "./scripts/new-release-key.sh"
   },
   "displayName": "KEPT",
   "description": "KEPT — promises compound. A private social investing habit app for Solana Mobile.",

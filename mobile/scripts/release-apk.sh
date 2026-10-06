@@ -1,10 +1,10 @@
 #!/bin/sh
 # Builds, signs and verifies a release APK for sideloading and GitHub releases.
 #
-#   ./scripts/release-apk.sh            → ~/.kept/releases/kept-<version>.apk
+#   ./scripts/release-apk.sh            → ~/.kept-seeker/releases/kept-<version>.apk
 #
 # The same production settings as the `production` profile in eas.json. The signing key
-# lives OUTSIDE the repo, in ~/.kept/android/ (kept-release.jks + keystore.properties);
+# lives OUTSIDE the repo, in ~/.kept-seeker/android/ (kept-seeker-release.jks + keystore.properties; create it with `npm run release:key`);
 # every release must be signed with it or phones refuse the update. Back it up. Upload it
 # to EAS (`eas credentials -p android`) so cloud builds sign with the same key.
 #
@@ -14,13 +14,13 @@ cd "$(dirname "$0")/.."
 
 JAVA_HOME=${JAVA_HOME:-/opt/homebrew/opt/openjdk@17/libexec/openjdk.jdk/Contents/Home}
 ANDROID_HOME=${ANDROID_HOME:-/opt/homebrew/share/android-commandlinetools}
-KEYS=${KEPT_KEYS:-$HOME/.kept/android}
+KEYS=${KEPT_KEYS:-$HOME/.kept-seeker/android}
 BT="$ANDROID_HOME/build-tools/36.0.0"
 VERSION=$(node -p "require('./app.json').expo.version")
-OUT="$HOME/.kept/releases/kept-$VERSION.apk"
+OUT="$HOME/.kept-seeker/releases/kept-$VERSION.apk"
 export JAVA_HOME ANDROID_HOME PATH="$JAVA_HOME/bin:$PATH"
 
-[ -f "$KEYS/kept-release.jks" ] || { echo "No release key at $KEYS/kept-release.jks" >&2; exit 1; }
+[ -f "$KEYS/kept-seeker-release.jks" ] || { echo "No release key at $KEYS/kept-seeker-release.jks — run: npm run release:key" >&2; exit 1; }
 
 # EXPO_PUBLIC_* are inlined into the bundle at build time — must match eas.json.
 export NODE_ENV=production
@@ -40,7 +40,7 @@ echo "sdk.dir=$ANDROID_HOME" > android/local.properties
 # an environment variable so it never lands in a log or a process listing.
 mkdir -p "$(dirname "$OUT")"
 KEPT_KS_PASS=$(sed -n 's/^storePassword=//p' "$KEYS/keystore.properties") \
-  "$BT/apksigner" sign --ks "$KEYS/kept-release.jks" --ks-key-alias kept \
+  "$BT/apksigner" sign --ks "$KEYS/kept-seeker-release.jks" --ks-key-alias kept-seeker \
   --ks-pass env:KEPT_KS_PASS --key-pass env:KEPT_KS_PASS \
   --out "$OUT" android/app/build/outputs/apk/release/app-release.apk
 
