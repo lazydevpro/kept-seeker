@@ -1,5 +1,6 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { useEffect, useId, useRef, useState } from 'react'
 import styles from './contact.module.css'
 
@@ -39,6 +40,7 @@ export function openContact(message?: string) {
 }
 
 export function Contact() {
+  const pathname = usePathname()
   const dialog = useRef<HTMLDialogElement>(null)
   const opener = useRef<HTMLButtonElement>(null)
   const messageField = useRef<HTMLTextAreaElement>(null)
@@ -110,10 +112,13 @@ export function Contact() {
 
   return (
     <>
-      <button type="button" className={styles.fab} onClick={open} ref={opener}>
-        <span className={styles.fabMark} aria-hidden="true" />
-        Get in touch
-      </button>
+      {/* Not on the deck: it would sit on every slide, and in the PDF. */}
+      {pathname?.startsWith('/deck') ? null : (
+        <button type="button" className={styles.fab} onClick={open} ref={opener}>
+          <span className={styles.fabMark} aria-hidden="true" />
+          Get in touch
+        </button>
+      )}
 
       <dialog className={styles.dialog} ref={dialog} aria-labelledby={headingId}>
         <div className={styles.panel}>

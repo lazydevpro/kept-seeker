@@ -8,6 +8,7 @@
     "tokens": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON ./scripts/generate-tokens.mjs",
     "dev": "npm run tokens && next dev --port 3000",
     "build": "npm run tokens && next build",
+    "deck:pdf": "npm run build && node scripts/deck-export.mjs",
     "preview": "npm run build && wrangler pages dev --port 8788",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
