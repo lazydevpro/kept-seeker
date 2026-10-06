@@ -540,7 +540,7 @@ export function CircleWords({ beat }: Clock) {
         out={112}
         y={104}
         size={58}
-        words={['And they keep', { accent: 'theirs.' }]}
+        words={['Back on', { accent: 'track.' }]}
       />
     </>
   )

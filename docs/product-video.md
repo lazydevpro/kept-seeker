@@ -1,6 +1,6 @@
 # KEPT — "Next week"
 
-**The product video · 67 s on the chosen track (77 s on the composed score) · motion graphics only · one continuous shot · 16:9**
+**The product video · 73 s on the chosen track (86 s on the composed score) · motion graphics only · one continuous shot · 16:9**
 
 Built: `video/src/next-week/` → `npx remotion render NextWeek` (see [Build](#build)).
 Replaces the rendered product film ([product-film.md](product-film.md)) and the live-action
@@ -41,10 +41,14 @@ the ring. The camera never cuts.
                 "Your circle sees it."  "Never how much."  Reactions come back.
                                    │  one friend's ring is still open
  RIPPLE         a nudge · their ring closes · pull back: a crowd of circles closing in a wave
+                "It's not just you. It's everyone around you."
                                    │  push into ours: it's week one
  THE YEAR       the row of weeks again, now every circle closing as we pass. Awards land.
-                One week stays open; the row keeps going.
-                                   │  week fifty-two grows into all three rings
+                One week stays open; the row keeps going. Under it, a tally: put away, $1,275.
+                                   │  pull back from week fifty-two
+ THE MONEY      the row is one of ten, a year each; the nine new rows fill as the tally
+                compounds: in ten years it could grow to $18,236 (an illustration, footnoted)
+                                   │  push into the last week of the ten years; it becomes all three rings
  END            white drains to ink · three rings close on three hits · "Promises compound."
                 the mark · KEPT · Android beta now · Solana dApp Store soon
 ```
@@ -97,7 +101,8 @@ At each one the outgoing object and the incoming one are the same size in the sa
 | Shared | the share card | two notifications | Sheds the amount, splits, lands on both friends' phones |
 | Ripple | three phones | three circles in a crowd | Pull back; the phones fade to their rings |
 | Ripple → Year | our circle | week one | Push in until it is exactly a week's size |
-| Year → End | week fifty-two | the three rings | Push in; goal and circle appear inside it |
+| Year → Money | week fifty-two | the first of ten rows | Pull back until ten years of weeks fill the frame |
+| Money → End | the last week of year ten | the three rings | Push in; goal and circle appear inside it |
 | End | the three rings | the mark | Contract, cross into the mark; the wordmark rises under it |
 
 ---
@@ -112,7 +117,7 @@ Unless you're not doing it alone.
 KEPT
 One small promise.
 $10 → $25 · every Friday
-It buys real stocks.
+It lets you buy real stocks.
 Tesla · Nvidia · S&P 500 · Apple · Gold · OpenAI (Private) · SpaceX (Private)
 Buy $25 of SpaceX
 Kept.
@@ -120,9 +125,11 @@ Your circle sees it.
 You kept this week's promise · $25 · SpaceX (the amount falls away)
 Never how much.
 A nudge from your circle.
-And they keep theirs.
+Back on track.
 WEEK 1 … WEEK 52 · First promise · First month · Steady eight · Half a year · A full year
 Week after week.
+PUT AWAY $1,275 → IN TEN YEARS, IT COULD GROW TO $18,236
+Illustration, not a forecast: $25 a week for ten years with one week a year missed ($12,750 put in), growing 7% a year. Capital at risk.
 Promises compound.
 KEPT
 Android beta now · Solana dApp Store soon
@@ -165,7 +172,7 @@ Regenerate with `node scripts/score.mjs` after changing any cue.
 claim can be released with the licence. Not committed (the licence forbids redistributing the
 file on its own): download it to `video/public/next-week/music/nastelbom-product.mp3`.
 
-At 140 BPM the film runs 67 s. The track is cut in four edits (`tracks.ts`):
+At 140 BPM the film runs 73 s. The track is cut in four edits (`tracks.ts`):
 
 | Film | Track |
 |---|---|
@@ -173,7 +180,7 @@ At 140 BPM the film runs 67 s. The track is cut in four edits (`tracks.ts`):
 | 0:09–0:15 | Silence; the film's effects and a swell carry the turn |
 | 0:15 | The first drop (bar 17), on the ring turning green |
 | 0:38 | The breakdown (bar 41), as the moment is shared |
-| 0:51 | The second drop arrives on its own, with the year — the phrase ends with the film |
+| 0:51 | The second drop arrives on its own, with the year; the three hits land on bar 57, the next phrase |
 
 `node scripts/track-info.mjs <file>` measures a new track's tempo, beat grid and bar-by-bar
 loudness, which is all the edit list needs.
@@ -189,6 +196,45 @@ their commercial licence ([request form](https://form.jotform.com/nocopyrightsou
 Best fit found: Tobu – *Faster* (instrumental, 128 BPM, [ncs.io/TFaster](https://ncs.io/TFaster)),
 then Syn Cole – *Feel Good* (124) and Jim Yosef – *Firefly* (130). Drop timestamps are estimates
 until checked by ear.
+
+---
+
+## Voiceover
+
+**One take, cut into lines.** The whole script goes to Gemini TTS in a single request, because
+lines generated one at a time come back with a different pitch, pace and level each time.
+The take is levelled as a whole, then cut into lines, and each line is placed on its beat
+(`video/src/next-week/voice.ts`).
+
+- **Words:** where a caption is up, the voice says the caption. Between captions, it tells the
+  problem: *You've been meaning to start investing. Next week, you tell yourself.*
+- **Voice:** Gemini 3.8 Flash TTS, prebuilt voice *Sulafat* (warm). `--voice Algieba` or
+  `Charon` gives a lower read, as a separate take.
+- **"kept"** is written in lower case in the script. Capitalised, the voice treated it as a name and it
+  was heard back as "Capt."
+- **Mix:** the voice is levelled to −12 LUFS, and the music ducks −9 dB under each line. The voice
+  sits a median 8 LU over the music.
+- **Checked:** Gemini listens back to the whole take, and to the cut lines joined two seconds
+  apart, transcribing them without the script. See `video/scripts/voiceover.mjs`.
+- **The number:** $1,000 → $1,500 in a year would be a 50% return — not a claim an investing
+  app can make. The tally shows what is really put away in a year ($1,275: 51 weeks × $25), then
+  a ten-year illustration at 7% a year, computed from the grid on screen and footnoted as such.
+
+| Film | Voice |
+|---|---|
+| 0:00–0:07 · the loop | You've been meaning to start investing. · Next week, you tell yourself. · The weekend. · A new phone. · Later. |
+| 0:10 · the silence | Next week never comes. · Unless you're not doing it alone. |
+| 0:16 · the drop | This is kept. |
+| 0:19–0:31 · promise, invest | Make one small promise. · Twenty-five dollars. · Every Friday. · It lets you buy real stocks. · Even companies that aren't public yet. |
+| 0:34 · Kept | Promise kept. |
+| 0:37–0:42 · shared | Your circle sees you kept your promise. · Never how much. · And they cheer you on. |
+| 0:44–0:50 · ripple | Fall behind, and they'll nudge you. · Back on track. · It's not just you. · It's everyone around you. |
+| 0:51–0:57 · the year | Week after week. · Month after month. · Miss a week, and just keep going. · You barely notice it adding up. |
+| 0:59 · the money | Keep going for ten years, and it could grow to over eighteen thousand dollars. |
+| 1:05 · three hits | — |
+| 1:07–1:10 · end | Promises compound. · kept. · Now in beta, on Android. |
+
+Times are at 140.1 BPM, the chosen track.
 
 ---
 
@@ -224,6 +270,11 @@ art and `promise.svg`.
 cd video
 node scripts/score.mjs                                       # music + effects → public/next-week/
 npx remotion render NextWeek-product out/kept-next-week-16x9-product.mp4   # the film
+npm run voiceover                                            # the voice take (GEMINI_API_KEY) → public/next-week/vo/
+node scripts/render.mjs NextWeek-product-vo                  # the film with the voiceover
+npx remotion still Thumbnail out/kept-next-week-thumbnail.png                    # 1280×720 thumbnail: "Next week never comes."
+npx remotion still Thumbnail-compound out/kept-next-week-thumbnail-compound.png  # the cream one: "Promises compound."
+npx remotion still Thumbnail-showcase out/kept-showcase-thumbnail.png          # the app: mark + KEPT left, the real "This week" screen on a phone right
 npx remotion render NextWeek out/kept-next-week-16x9.mp4     # the same film on the composed score
 node scripts/stills.mjs 22 36 80                             # stills at given beats, for checking
 ```

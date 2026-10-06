@@ -538,7 +538,7 @@ export function InvestWords({ beat }: Clock) {
         out={68.5}
         y={120}
         size={60}
-        words={['It buys real', { accent: 'stocks.' }]}
+        words={['It lets you buy real', { accent: 'stocks.' }]}
       />
       <Caption
         beat={beat}

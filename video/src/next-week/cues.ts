@@ -26,9 +26,10 @@ export const SECTION = {
   shared: 88,
   ripple: 104,
   year: 120,
-  end: 136,
-  logo: 146, // the mark, then the wordmark
-  out: 152,
+  money: 138, // the year's row pulls back to ten years of weeks
+  end: 152,
+  logo: 162, // the mark, then the wordmark
+  out: 168,
 } as const
 
 export const TOTAL_BEATS = SECTION.out
@@ -70,14 +71,14 @@ export const WAVE_STEP = 0.5
 export const WAVE_RINGS = 8
 
 /** The three hits at the end. */
-export const HITS = [136, 138, 140]
+export const HITS = [SECTION.end, SECTION.end + 2, SECTION.end + 4]
 
 /**
  * The year: where the camera is, in weeks, at a given beat. Starts on week 1, accelerates,
  * and eases onto week 52 — the resolution of the opening's hard stop.
  */
 export const YEAR_FROM = SECTION.year
-export const YEAR_TO = 134
+export const YEAR_TO = SECTION.money
 
 export function yearWeek(beat: number) {
   const t = Math.min(Math.max((beat - YEAR_FROM) / (YEAR_TO - YEAR_FROM), 0), 1)
@@ -97,6 +98,15 @@ export function weekBeat(week: number) {
   }
   return hi
 }
+
+/**
+ * The money. The row of the year pulls back into ten years of weeks; the nine new rows fill
+ * while the sum under them compounds; then the camera pushes into the very last week, which
+ * becomes the three rings of the end. [start, end] each.
+ */
+export const MONEY_PULL: [number, number] = [SECTION.money + 0.8, SECTION.money + 4.4]
+export const MONEY_FILL: [number, number] = [SECTION.money + 4.2, SECTION.money + 9]
+export const MONEY_PUSH: [number, number] = [SECTION.money + 9.8, SECTION.end - 1]
 
 /** The one week in the year that was not kept. The row keeps going. */
 export const MISSED_WEEK = 19

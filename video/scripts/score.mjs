@@ -431,16 +431,17 @@ function compose() {
   pad(fx, at(30), at(SECTION.drop - 30), [62, 66, 69, 74], 0.22, 1400)
   riser(fx, at(31), at(SECTION.drop - 31), 0.7)
 
-  // The groove, with the sections the picture needs.
+  // The groove, with the sections the picture needs. It stops two beats before the three hits.
+  const BREAK = SECTION.end - 2
   const kickOff = (beat) =>
     (beat >= SECTION.through && beat < SECTION.promise) ||
     (beat >= 78 && beat < SECTION.kept) ||
     (beat >= 110 && beat < 112) ||
     (beat >= 118 && beat < SECTION.year) ||
-    beat >= 134
+    beat >= BREAK
   const duck = new Float32Array(drums.L.length).fill(1)
 
-  for (let beat = SECTION.drop; beat < 134; beat++) {
+  for (let beat = SECTION.drop; beat < BREAK; beat++) {
     const chord = chordAt(beat, SECTION.drop)
     const inBar = (beat - SECTION.drop) % 4
     const big = beat >= SECTION.year
@@ -465,7 +466,7 @@ function compose() {
         )
       }
     }
-    if (beat >= 80 && beat < 134 && !(beat >= 110 && beat < 112)) {
+    if (beat >= 80 && beat < BREAK && !(beat >= 110 && beat < 112)) {
       const arp = [...chord.tones, chord.tones[0] + 12]
       for (let s = 0; s < 4; s++)
         pluck(keys, at(beat + s * 0.25), arp[s] + 12, 0.06, s % 2 ? 0.5 : -0.5, 1.3)
@@ -477,7 +478,7 @@ function compose() {
   riser(fx, at(78), at(2), 0.55)
   for (let s = 78; s < SECTION.kept; s += 0.25) clap(drums, at(s), 0.15 + (s - 78) * 0.18)
   riser(fx, at(118), at(2), 0.45)
-  riser(fx, at(134), at(2), 0.6)
+  riser(fx, at(BREAK), at(2), 0.6)
 
   // The Kept downbeat.
   crash(drums, at(SECTION.kept), 0.5)
@@ -489,11 +490,12 @@ function compose() {
     [SECTION.kept + 8, PHRASE_A, 0],
     [SECTION.kept + 24, PHRASE_B, 0],
     [SECTION.year - 4 + 4, PHRASE_A, 12],
+    [SECTION.money, PHRASE_B, 12],
   ]
   for (const [start, phrase, octave] of phrases) {
     for (const [o, len, m] of phrase) {
       const beat = start + o
-      if (beat >= 134 || (kickOff(beat) && beat >= 110 && beat < 112)) continue
+      if (beat >= BREAK || (kickOff(beat) && beat >= 110 && beat < 112)) continue
       lead(leadBus, at(beat), at(len) - 0.02, m + octave, octave ? 0.8 : 1)
     }
   }

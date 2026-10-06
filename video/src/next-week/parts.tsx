@@ -274,6 +274,7 @@ export function Phone({
   opacity = 1,
   blur = 0,
   bezel = 1,
+  rim,
   children,
 }: {
   x: number
@@ -284,6 +285,8 @@ export function Phone({
   blur?: number
   /** The frame and shadow fade separately, so a screen can be all there is. */
   bezel?: number
+  /** A thin light edge round the frame, so a dark phone still reads on a dark background. */
+  rim?: string
   children?: React.ReactNode
 }) {
   if (opacity <= 0.001) return null
@@ -306,7 +309,7 @@ export function Phone({
           inset: 0,
           borderRadius: PHONE.r,
           background: '#15181A',
-          boxShadow: '0 40px 90px rgba(11,15,10,0.22), 0 10px 24px rgba(11,15,10,0.12)',
+          boxShadow: `${rim ? `inset 0 0 0 2px ${rim}, ` : ''}0 40px 90px rgba(11,15,10,0.22), 0 10px 24px rgba(11,15,10,0.12)`,
           opacity: bezel,
         }}
       />

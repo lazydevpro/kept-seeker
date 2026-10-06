@@ -16,6 +16,9 @@ const CUTS = [
   { id: 'NextWeek', out: 'out/kept-next-week-16x9.mp4' },
   // The same film on NastelBom – Product. Needs the MP3 in public/next-week/music/ (see tracks.ts).
   { id: 'NextWeek-product', out: 'out/kept-next-week-16x9-product.mp4' },
+  // Both again with the voiceover. Needs `npm run voiceover` first (a Gemini key; see voice.ts).
+  { id: 'NextWeek-product-vo', out: 'out/kept-next-week-16x9-product-vo.mp4' },
+  { id: 'NextWeek-vo', out: 'out/kept-next-week-16x9-vo.mp4' },
   // The generated-footage piece.
   { id: 'Launch', out: 'out/kept-troop-16x9.mp4' },
   { id: 'LaunchVertical', out: 'out/kept-troop-9x16.mp4' },
