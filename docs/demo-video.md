@@ -7,6 +7,14 @@ Built in `video/` like the film: the film's first 20 seconds as the hook, then p
 inside the film's `Phone` frame, narrated in the same voice (Gemini TTS, Sulafat, one take),
 then the film's end card.
 
+## Narration status
+
+Recorded 6 Oct in AI Studio (one take, 53.8 s; the API was out of quota). Cut by
+`npm run narration -- <take.wav>` (`video/scripts/narration.mjs`): lines are fitted to the
+pauses phrase by phrase, with no model listening. 15 of 15 joins agree with a hand mapping of
+the same pauses. **Not yet listened to:** `video/public/demo/vo/check-reel.wav` plays every
+line two seconds apart.
+
 ## Script
 
 One sentence per line, so the single take cuts cleanly. Lines in *italics* are the film's own,

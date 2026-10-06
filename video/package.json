@@ -12,7 +12,8 @@
     "still": "remotion still Launch out/frame.png",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "narration": "node ./scripts/narration.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.527",
