@@ -13,7 +13,14 @@ Plan: [docs/plans/clock-in-submission.md](docs/plans/clock-in-submission.md). Ow
       `kept-seeker-jobs`), `kept-seeker.pages.dev` (+ KV), app `com.lazydevpro.keptseeker` 1.1.0 #clockin
 - [x] API live on its own Cloudflare account: `kept-seeker-api.keptseeker.workers.dev`, cron on,
       migrations 0001–0011, secrets set (auth, Jupiter, RPC) #clockin
-- [ ] Owner: `npm run release:key` (back up `~/.kept-seeker/android/`), then the site deploy #clockin
+- [x] Release key (`~/.kept-seeker/android/`), APK 1.1.0 built and signed, published as the
+      v1.1.0 pre-release on kept-seeker; `assetlinks.json` verified by Google (`linked: true`) #clockin
+- [x] Site live at kept-seeker.pages.dev (own account); crypto market section committed #web
+- [ ] Owner: redeploy the site for the crypto section (`cd web && npm run deploy`) #web
+- [x] Film "Next week": "stocks and crypto" line, reel and small print; new take cut and
+      listened to by the owner. Render pending #film
+- [x] Demo narration recorded (AI Studio), cut by `npm run narration`, listened to — good #film
+- [ ] Terms: §4 "The assets" covers xStocks and Tessera only; crypto needs the owner's wording #launch
 - [ ] Put the new key's SHA-256 in `web/public/.well-known/assetlinks.json`, redeploy the site #web
 - [x] Fresh-clone check: CI on the new repo runs `npm ci` + every gate on a clean runner — green #verify
 - [x] README: a Clock In block at the top (APK, video, deck, install, run locally) #clockin

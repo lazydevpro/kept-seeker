@@ -12,8 +12,8 @@ then the film's end card.
 Recorded 6 Oct in AI Studio (one take, 53.8 s; the API was out of quota). Cut by
 `npm run narration -- <take.wav>` (`video/scripts/narration.mjs`): lines are fitted to the
 pauses phrase by phrase, with no model listening. 15 of 15 joins agree with a hand mapping of
-the same pauses. **Not yet listened to:** `video/public/demo/vo/check-reel.wav` plays every
-line two seconds apart.
+the same pauses. **Listened to by the owner on 6 Oct: every line good.**
+`video/public/demo/vo/check-reel.wav` plays every line two seconds apart.
 
 ## Script
 
