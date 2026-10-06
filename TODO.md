@@ -2,6 +2,29 @@
 
 Spec: [docs/design/kept-design-system.md](docs/design/kept-design-system.md)
 
+## Now — Solana dApp Store readiness (reviewed 7 Oct 2026) #store
+
+Sources: dApp Store Terms of Use, Publisher Policy, Developer Agreement, docs.solanamobile.com.
+
+- [ ] Device pass on a phone with real money (SOL, a stock, sell, reinstall → restore, widget,
+      invite link opens the app) — nothing wallet-side has run on a phone on this stack #verify
+- [ ] **Decide: tokenized stocks in the store build.** ToS §5.4.16 bars using the store to
+      transact in securities; the Publisher Policy wants regulated financial services to file
+      their documentation. Crypto-only for the store (PRIVATE_MARKETS-style switch), or a
+      lawyer's view on xStocks first #legal
+- [ ] Report and block for social content (Publisher Policy: user-generated content needs
+      report/flag, moderation and blocking). KEPT has leave and owner-remove, no report #screens
+- [ ] Push (FCM project + EXPO_ACCESS_TOKEN): reminders and nudges reach no phone today #notifications
+- [ ] Listing: 512×512 icon, ≥4 screenshots ≥1080 px from the crypto-first build, banner
+      1200×600, feature graphic 1200×1200 (optional), short description ≤30 chars, support
+      email; privacy + terms are in-app (Account) and on the site; account deletion exists #store
+- [ ] Publisher Portal: KYC/KYB, a publisher wallet with ~0.2 SOL (keep it — every update needs
+      it). Review takes 3–5 business days; for Clock In it must be live by ~10 Dec #store
+- [ ] Optional: crash reporting; encrypt the MWA auth token (the wallet kit keeps it in
+      AsyncStorage); a lawyer's review of /terms and /privacy #launch
+- [ ] Deck screenshots show the old shelf (private markets, no crypto): recapture with
+      `video/scripts/app-shots.mjs` #deck
+
 ## Now — Clock In submission (closes Fri 9 Oct, 12:29 IST) #clockin
 
 Plan: [docs/plans/clock-in-submission.md](docs/plans/clock-in-submission.md). Own deadline: Thu 8 Oct, 22:00 IST.
