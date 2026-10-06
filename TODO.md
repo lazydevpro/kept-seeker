@@ -2,6 +2,49 @@
 
 Spec: [docs/design/kept-design-system.md](docs/design/kept-design-system.md)
 
+## Now — Clock In submission (closes Fri 9 Oct, 12:29 IST) #clockin
+
+Plan: [docs/plans/clock-in-submission.md](docs/plans/clock-in-submission.md). Own deadline: Thu 8 Oct, 22:00 IST.
+
+- [ ] Owner: register on Align (Radiants) and confirm the sign-up deadline #clockin
+- [ ] Commit and push the pending work (deck, film, demo mode, circle changes, tests) #clockin
+- [ ] Fresh-clone check: install, typecheck and tests in every workspace from a clean clone #verify
+- [ ] README: a Clock In block at the top (APK, video, deck, install, run locally) #clockin
+- [ ] Device pass on a phone with $1 real money (the open #verify item below) #verify
+- [ ] v1.0.2 APK from the submitted commit, if the app changed since v1.0.1 #mobile
+- [ ] Demo video, 2:45: film hook + narrated phone recording + end card (`video/`) #film
+- [ ] Deck pass against the four criteria; re-export `docs/kept-deck.pdf` #deck
+- [ ] Draft on Align, run the AI Coach, final submit #clockin
+- [ ] After a win: live on the Solana dApp Store by 10 Dec #launch
+- [ ] Decide: crypto shelf (SOL, cbBTC, SKR, maybe ETH) and "pay your promise in SKR" #clockin
+- [ ] Colosseum World's Fair by 13 Oct 12:29 IST: register, presentation video (2–3 min),
+      go-to-market plan, past-work disclosure; select India for the Superteam India track #clockin
+
+## Now — the product film "Next week" #film
+
+Spec: [docs/product-video.md](docs/product-video.md)
+
+- [x] Voiceover: one Gemini TTS take of the whole script, cut at the pauses, every clip checked by
+      transcription, laid on the beats with the music ducked under it (`video/scripts/voiceover.mjs`)
+- [x] Second half from feedback: every circle feature said, "everyone around you", a new money
+      section (put away $1,275 → an $18,236 ten-year illustration, footnoted)
+- [x] Thumbnails: the hook on ink, the payoff on cream
+- [x] The method as a reusable skill: `~/.claude/skills/product-film` (idea, workflow, portable
+      scripts, a tested starter kit, this film as the case study, a learnings log)
+- [ ] Commit the film work (`video/`, `docs/product-video.md`), not committed yet
+
+## Now — the deck #deck
+
+- [x] Product deck at `web/app/deck`, exported by `web/scripts/deck-export.mjs` to
+      `docs/kept-deck.pdf` (20 slides)
+- [x] Under the hood: architecture, one purchase end to end, privacy as the API sends it,
+      wallet identity, reliability and security, every figure read from `backend/`
+- [x] Roadmap slide. "Later" (iOS, circle streaks, more countries) is a proposal, not a plan
+      the repo records; confirm or replace
+- [ ] Commit the deck (`web/app/deck`, `web/public/deck`, `web/scripts/deck-export.mjs`,
+      `docs/kept-deck.pdf`), not committed yet
+- [ ] 9:16 and 1:1 layouts; the 30 s and 15 s cutdowns (planned in the spec)
+
 ## Done — KEPT UI rebuild #design
 
 - [x] Design tokens: KEPT palette (light-first), Sora + Inter type scale, spacing/radii/shadow #design
