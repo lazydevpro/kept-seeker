@@ -1,7 +1,11 @@
 import { Hono } from "hono";
 import { z } from "zod";
 import { ApiError, id } from "../lib/http";
-import { RESTRICTED_JURISDICTIONS, TERMS_VERSION } from "../lib/terms";
+import {
+  CRYPTO_RESTRICTED_JURISDICTIONS,
+  RESTRICTED_JURISDICTIONS,
+  TERMS_VERSION,
+} from "../lib/terms";
 import { parseJson, publicProfile } from "../lib/validation";
 import type { AppEnv, Variables } from "../types";
 
@@ -38,8 +42,13 @@ profileRoutes.get("/me", async (c) => {
     wallets: wallets.results,
     terms: {
       current: TERMS_VERSION,
+      // The terms, with the statement crypto needs.
       accepted: Number(profile?.terms_version ?? 0) >= TERMS_VERSION,
+      // The fuller statement stocks and private markets need as well.
+      securitiesAccepted:
+        Number(profile?.securities_terms_version ?? 0) >= TERMS_VERSION,
       restrictedJurisdictions: RESTRICTED_JURISDICTIONS,
+      cryptoRestrictedJurisdictions: CRYPTO_RESTRICTED_JURISDICTIONS,
     },
   });
 });
@@ -84,25 +93,52 @@ profileRoutes.patch("/me", async (c) => {
 });
 
 /**
- * Agree to the terms and confirm eligibility. Asked once, before the first
- * purchase, and again only if TERMS_VERSION rises. Both fields must be sent as
- * `true` — the server records an explicit statement, never an absence of one.
+ * Agree to the terms and confirm eligibility. Asked before the first purchase,
+ * and again only if TERMS_VERSION rises. The terms and one statement must be sent
+ * as `true` — the server records an explicit statement, never an absence of one:
+ *
+ * - `notRestricted`: not a U.S. person, not in any RESTRICTED_JURISDICTIONS.
+ *   Needed for stocks and private markets, and covers crypto too, the longer list
+ *   containing the shorter. The only statement app 1.1.0 knows.
+ * - `notCryptoRestricted`: not in any CRYPTO_RESTRICTED_JURISDICTIONS. Enough
+ *   for crypto alone.
  */
 profileRoutes.post("/me/terms", async (c) => {
   const body = await parseJson(
     c,
-    z.object({
-      version: z.literal(TERMS_VERSION),
-      acceptTerms: z.literal(true),
-      notRestricted: z.literal(true),
-    }),
+    z
+      .object({
+        version: z.literal(TERMS_VERSION),
+        acceptTerms: z.literal(true),
+        notRestricted: z.literal(true).optional(),
+        notCryptoRestricted: z.literal(true).optional(),
+      })
+      .refine((value) => value.notRestricted || value.notCryptoRestricted, {
+        message: "Confirm where you live before buying.",
+      }),
   );
+  const securities = body.notRestricted === true;
   await c.env.DB.prepare(
-    "UPDATE profiles SET terms_version = ?, terms_accepted_at = CURRENT_TIMESTAMP WHERE user_id = ?",
+    `UPDATE profiles
+     SET terms_version = ?, terms_accepted_at = CURRENT_TIMESTAMP,
+         securities_terms_version = CASE WHEN ? THEN ? ELSE securities_terms_version END
+     WHERE user_id = ?`,
   )
-    .bind(body.version, c.get("userId"))
+    .bind(body.version, securities ? 1 : 0, body.version, c.get("userId"))
     .run();
-  return c.json({ terms: { current: TERMS_VERSION, accepted: true } });
+  const profile = await c.env.DB.prepare(
+    "SELECT securities_terms_version FROM profiles WHERE user_id = ?",
+  )
+    .bind(c.get("userId"))
+    .first<{ securities_terms_version: number | null }>();
+  return c.json({
+    terms: {
+      current: TERMS_VERSION,
+      accepted: true,
+      securitiesAccepted:
+        Number(profile?.securities_terms_version ?? 0) >= TERMS_VERSION,
+    },
+  });
 });
 
 profileRoutes.post("/me/push-tokens", async (c) => {

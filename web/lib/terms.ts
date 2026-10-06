@@ -6,8 +6,19 @@
  * build with no path into the backend workspace. Change both together, and raise
  * TERMS_VERSION there when the change is material.
  */
-export const TERMS_VERSION = 2
+export const TERMS_VERSION = 3
 
+/** Who may not buy crypto (SOL, cbBTC, SKR): U.S. embargoes and the United Kingdom. */
+export const CRYPTO_RESTRICTED_JURISDICTIONS = [
+  'the United Kingdom',
+  'Cuba',
+  'Iran',
+  'North Korea',
+  'Syria',
+  'the Crimea, Donetsk and Luhansk regions',
+] as const
+
+/** Who may not buy tokenized stocks or private-market tokens: the issuers' list. */
 export const RESTRICTED_JURISDICTIONS = [
   'the United States',
   'Canada',

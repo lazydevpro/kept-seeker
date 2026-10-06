@@ -9,7 +9,7 @@ never **how much**.
 
 | | |
 |---|---|
-| APK | [KEPT 1.1.0 for Android](https://github.com/lazydevpro/kept-seeker/releases/tag/v1.1.0) — install on a Seeker or any Android 7.0+ phone |
+| APK | [KEPT 1.1.1 for Android](https://github.com/lazydevpro/kept-seeker/releases/tag/v1.1.1) — install on a Seeker or any Android 7.0+ phone |
 | Demo video | _added with the submission_ |
 | Deck | [docs/kept-deck.pdf](docs/kept-deck.pdf) |
 | Site | <https://kept-seeker.pages.dev> |
@@ -39,9 +39,10 @@ below.
 2. Have a wallet app with a few dollars of USDC and a little SOL for fees.
 3. Set a goal and a weekly promise, connect the wallet, and keep week one with a $1 buy.
 
-Buying isn't offered to U.S. persons or in a few restricted countries. The stock and
-private-market issuers don't allow it, and this edition applies the same terms to crypto. Goals,
-circles, cheers and nudges work everywhere.
+Tokenized stocks and private-market tokens aren't offered to U.S. persons or in a few
+restricted countries, because their issuers don't allow it. Crypto is open more widely: only the
+regions under U.S. embargo (the same ones the Solana dApp Store excludes) and the United Kingdom are
+left out. Goals, circles, cheers and nudges work everywhere.
 
 ## Workspace
 

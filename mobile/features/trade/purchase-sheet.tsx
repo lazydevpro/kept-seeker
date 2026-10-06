@@ -86,21 +86,26 @@ export function PurchaseSheet({ asset, onClose }: { asset: InvestableAsset | nul
   const [order, setOrder] = useState<TradeOrder | null>(null)
   const [acknowledged, setAcknowledged] = useState(false)
 
-  /*
-   * Once per account, before the first purchase: the issuers restrict who may
-   * hold these tokens, so the reader confirms they are not one of those people
-   * and accepts the terms. The server refuses an order until they have
-   * (`terms_required`); selling is never gated.
-   */
   const me = useMe()
   const acceptTerms = useAcceptTerms()
   const terms = me.data?.terms
-  const termsNeeded = Boolean(linked && terms && !terms.accepted)
   const [eligible, setEligible] = useState(false)
 
   const detail = useAssetDetail(asset?.mint ?? null).data?.asset ?? null
   const isTessera = (detail?.provider ?? asset?.provider) === 'tessera'
   const isCrypto = (detail?.provider ?? asset?.provider) === 'crypto'
+
+  /*
+   * Once per account, before the first purchase: the reader confirms they may buy it and accepts
+   * the terms. Crypto needs only the short statement (not in a sanctioned region or the UK);
+   * stocks and private markets need the issuers' fuller one (not a U.S. person, …). The server
+   * refuses an order until the right one is made (`terms_required`); selling is never gated. A
+   * server without `securitiesAccepted` knows only the full statement.
+   */
+  const termsNeeded = Boolean(
+    linked && terms && (isCrypto ? !terms.accepted : !(terms.securitiesAccepted ?? terms.accepted)),
+  )
+  const cryptoList = terms?.cryptoRestrictedJurisdictions
 
   const amount = Number(amountText.replace(/[^0-9.]/g, ''))
   const amountValid = Number.isFinite(amount) && amount >= MIN_USDC && amount <= MAX_USDC
@@ -138,7 +143,8 @@ export function PurchaseSheet({ asset, onClose }: { asset: InvestableAsset | nul
     if (termsNeeded && (!eligible || !terms)) return
     setTrading(true)
     try {
-      if (termsNeeded && terms) await acceptTerms.mutateAsync(terms.current)
+      if (termsNeeded && terms)
+        await acceptTerms.mutateAsync({ version: terms.current, scope: isCrypto && cryptoList ? 'crypto' : 'all' })
       const prepared = await requestTradeOrder({
         outputMint: asset.mint,
         outputSymbol: asset.symbol,
@@ -235,8 +241,9 @@ export function PurchaseSheet({ asset, onClose }: { asset: InvestableAsset | nul
                     color={eligible ? colors.kiwiDeep : colors.inkFaint}
                   />
                   <T role="caption" style={styles.ackText}>
-                    I am not a U.S. person, I do not live in {listOf(terms.restrictedJurisdictions)}, and I accept the
-                    Terms of use.
+                    {isCrypto && cryptoList
+                      ? `I do not live in ${listOf(cryptoList)}, and I accept the Terms of use.`
+                      : `I am not a U.S. person, I do not live in ${listOf(terms.restrictedJurisdictions)}, and I accept the Terms of use.`}
                   </T>
                 </Pressable>
                 <Pressable

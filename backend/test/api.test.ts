@@ -1091,6 +1091,94 @@ describe("Launch readiness", () => {
     expect(await sell.text()).not.toContain("terms_required");
   });
 
+  it("lets crypto through on the short statement, and stocks only on the full one", async () => {
+    const cookie = await signIn();
+    const w = wallet();
+    await call(cookie, "/v1/wallets/verify", {
+      method: "POST",
+      body: JSON.stringify(await w.signFor(cookie)),
+    });
+    const me = async () =>
+      (
+        (await (await call(cookie, "/v1/me")).json()) as {
+          terms: {
+            current: number;
+            accepted: boolean;
+            securitiesAccepted: boolean;
+            restrictedJurisdictions: string[];
+            cryptoRestrictedJurisdictions: string[];
+          };
+        }
+      ).terms;
+    const before = await me();
+    expect(before.cryptoRestrictedJurisdictions).toContain(
+      "the United Kingdom",
+    );
+    expect(before.cryptoRestrictedJurisdictions).not.toContain(
+      "the United States",
+    );
+    expect(before.restrictedJurisdictions).toContain("the United States");
+
+    const buy = (outputSymbol: string, outputMint: string) =>
+      call(cookie, "/v1/trades/order", {
+        method: "POST",
+        body: JSON.stringify({
+          outputMint,
+          outputSymbol,
+          amountUsdc: 5,
+          taker: w.address,
+          tesseraAcknowledged: true,
+        }),
+      });
+    const sol = () => buy("SOL", "So11111111111111111111111111111111111111112");
+    const openAi = () =>
+      buy("tOpenAI", "oPAiAikWTaFj9RYoRFD35ccfwhnMcB3ThgBZRHSkjTZ");
+    expect((await sol()).status).toBe(403);
+
+    // The crypto statement alone: crypto passes, a private-market token does not.
+    const short = await call(cookie, "/v1/me/terms", {
+      method: "POST",
+      body: JSON.stringify({
+        version: before.current,
+        acceptTerms: true,
+        notCryptoRestricted: true,
+      }),
+    });
+    expect(short.status).toBe(200);
+    expect(await me()).toMatchObject({
+      accepted: true,
+      securitiesAccepted: false,
+    });
+    expect((await sol()).status).not.toBe(403);
+    const refused = await openAi();
+    expect(refused.status).toBe(403);
+    expect(await refused.json()).toMatchObject({
+      error: { code: "terms_required" },
+    });
+
+    // The full statement, as app 1.1.0 sends it, covers both.
+    await call(cookie, "/v1/me/terms", {
+      method: "POST",
+      body: JSON.stringify({
+        version: before.current,
+        acceptTerms: true,
+        notRestricted: true,
+      }),
+    });
+    expect(await me()).toMatchObject({
+      accepted: true,
+      securitiesAccepted: true,
+    });
+    expect((await openAi()).status).not.toBe(403);
+
+    // Terms alone, with no statement about where you live, are refused.
+    const bare = await call(cookie, "/v1/me/terms", {
+      method: "POST",
+      body: JSON.stringify({ version: before.current, acceptTerms: true }),
+    });
+    expect(bare.status).toBe(422);
+  });
+
   it('does not name every anonymous account "Anonymous"', async () => {
     const me = (await (await call(await signIn(), "/v1/me")).json()) as {
       profile: { displayName: string };

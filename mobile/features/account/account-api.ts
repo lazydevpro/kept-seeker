@@ -107,10 +107,18 @@ export function useRename() {
 export function useAcceptTerms() {
   const client = useQueryClient()
   return useMutation({
-    mutationFn: (version: number) =>
+    /*
+     * `crypto` confirms only what buying crypto needs; `all` confirms the fuller statement
+     * stocks and private markets need too (backend/src/lib/terms.ts).
+     */
+    mutationFn: ({ version, scope }: { version: number; scope: 'crypto' | 'all' }) =>
       apiRequest('/v1/me/terms', {
         method: 'POST',
-        body: JSON.stringify({ version, acceptTerms: true, notRestricted: true }),
+        body: JSON.stringify(
+          scope === 'crypto'
+            ? { version, acceptTerms: true, notCryptoRestricted: true }
+            : { version, acceptTerms: true, notRestricted: true },
+        ),
       }),
     onSuccess: () => client.invalidateQueries({ queryKey: ['me'] }),
   })

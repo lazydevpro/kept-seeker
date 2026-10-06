@@ -2,7 +2,7 @@
   "expo": {
     "name": "KEPT",
     "slug": "kept-seeker",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "keptseeker",
@@ -51,7 +51,7 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
       ],
-      "versionCode": 1
+      "versionCode": 2
     },
     "web": {
       "output": "static",

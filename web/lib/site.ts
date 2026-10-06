@@ -26,9 +26,9 @@ export const DAPP_STORE_URL: string | null = null
  * new APK is published (`mobile/npm run release:apk`, then `gh release create`).
  */
 export const BETA = {
-  version: '1.1.0',
-  apkUrl: 'https://github.com/lazydevpro/kept-seeker/releases/download/v1.1.0/kept-1.1.0.apk',
-  releaseUrl: 'https://github.com/lazydevpro/kept-seeker/releases/tag/v1.1.0',
+  version: '1.1.1',
+  apkUrl: 'https://github.com/lazydevpro/kept-seeker/releases/download/v1.1.1/kept-1.1.1.apk',
+  releaseUrl: 'https://github.com/lazydevpro/kept-seeker/releases/tag/v1.1.1',
   sizeMb: 81,
   minAndroid: '7.0',
 } as const

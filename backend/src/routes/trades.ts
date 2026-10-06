@@ -968,12 +968,21 @@ tradeRoutes.post("/order", async (c) => {
     );
   // Buying only. `/sell-order` deliberately has no such gate: whatever the
   // terms say, nobody is ever stopped from getting their money back out.
+  // Crypto needs the terms and the short statement; stocks and private markets
+  // need the issuers' fuller one as well (lib/terms.ts).
   const terms = await c.env.DB.prepare(
-    "SELECT terms_version FROM profiles WHERE user_id = ?",
+    "SELECT terms_version, securities_terms_version FROM profiles WHERE user_id = ?",
   )
     .bind(c.get("userId"))
-    .first<{ terms_version: number | null }>();
-  if (Number(terms?.terms_version ?? 0) < TERMS_VERSION)
+    .first<{
+      terms_version: number | null;
+      securities_terms_version: number | null;
+    }>();
+  const agreed =
+    asset.provider === "crypto"
+      ? Number(terms?.terms_version ?? 0) >= TERMS_VERSION
+      : Number(terms?.securities_terms_version ?? 0) >= TERMS_VERSION;
+  if (!agreed)
     throw new ApiError(
       403,
       "Confirm you are eligible and accept the terms before your first purchase.",

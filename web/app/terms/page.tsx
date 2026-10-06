@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import { LegalPage } from '@/components/legal'
-import { RESTRICTED_JURISDICTIONS } from '@/lib/terms'
+import { CRYPTO_RESTRICTED_JURISDICTIONS, RESTRICTED_JURISDICTIONS } from '@/lib/terms'
 
 export const metadata: Metadata = {
   title: 'Terms of use — KEPT',
@@ -8,15 +8,18 @@ export const metadata: Metadata = {
   alternates: { canonical: '/terms' },
 }
 
-const restricted = `${RESTRICTED_JURISDICTIONS.slice(0, -1).join(', ')} or ${RESTRICTED_JURISDICTIONS.at(-1)}`
+const listOf = (items: readonly string[]) => `${items.slice(0, -1).join(', ')} or ${items.at(-1)}`
+const restricted = listOf(RESTRICTED_JURISDICTIONS)
+const cryptoRestricted = listOf(CRYPTO_RESTRICTED_JURISDICTIONS)
 
 export default function Terms() {
   return (
     <LegalPage title="Terms of use" updated="7 October 2026">
       <p className="summary">
         KEPT helps you keep a weekly investing habit. It is not a broker, bank or adviser, it never holds your
-        money, and what you buy can lose value. Buying through KEPT — tokenized stocks, crypto and
-        private-market tokens alike — is not available to U.S. persons or to residents of {restricted}.
+        money, and what you buy can lose value. Tokenized stocks and private-market tokens are not available to
+        U.S. persons or to residents of {restricted}. Crypto is not available to residents of {cryptoRestricted}
+        .
       </p>
 
       <h2>1. Agreeing to these terms</h2>
@@ -43,14 +46,20 @@ export default function Terms() {
 
       <h2>3. Who may buy through KEPT</h2>
       <p>
-        The issuers of tokenized stocks and private-market tokens restrict who may acquire them, and KEPT
-        applies the same restrictions to every purchase made through it, crypto included. Before your first
-        purchase you will be asked to confirm, and by buying you confirm, that:
+        Before your first purchase you will be asked to confirm, and by buying you confirm, that you are not on
+        any sanctions list, that buying what you buy is lawful where you are, and:
       </p>
       <ul>
-        <li>you are not a U.S. person, and you are not acting for or on behalf of one;</li>
-        <li>you are not resident in, located in or a citizen of {restricted};</li>
-        <li>you are not on any sanctions list, and buying these assets is lawful where you are.</li>
+        <li>
+          <strong>for crypto,</strong> that you are not resident in, located in or a citizen of{' '}
+          {cryptoRestricted}. These are the regions under U.S. embargo, which the Solana dApp Store also
+          excludes, and the United Kingdom, whose rules on promoting crypto to consumers KEPT does not meet;
+        </li>
+        <li>
+          <strong>for tokenized stocks and private-market tokens,</strong> that you are not a U.S. person, are
+          not acting for or on behalf of one, and are not resident in, located in or a citizen of {restricted}.
+          Their issuers restrict who may acquire them.
+        </li>
       </ul>
       <p>
         Issuers publish their own, authoritative restrictions — for xStocks, at{' '}

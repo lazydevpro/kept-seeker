@@ -35,8 +35,12 @@ export interface LinkedWallet {
 /** Whether this account has agreed to the current terms. See `backend/src/lib/terms.ts`. */
 export interface TermsStatus {
   current: number
+  /** The terms, with the statement crypto needs. */
   accepted: boolean
+  /** The fuller statement stocks and private markets need. Absent from servers before terms 3. */
+  securitiesAccepted?: boolean
   restrictedJurisdictions: string[]
+  cryptoRestrictedJurisdictions?: string[]
 }
 
 export function useMe() {
