@@ -18,10 +18,9 @@
    * The `name` here IS the subdomain. Renaming it moves the site.
    */
   "name": "kept-seeker",
-  // KEPT for Seeker's own Cloudflare account. Pinned so nothing in this repo can deploy to the
-  // original KEPT's account, whichever login is active (the "kept-seeker" wrangler profile is
-  // bound to this folder).
-  "account_id": "1e74ec5c350b589196e5aab17edd582a",
+  // KEPT for Seeker's own Cloudflare account is pinned in package.json's deploy script
+  // (CLOUDFLARE_ACCOUNT_ID): Pages configs refuse "account_id". The "kept-seeker" wrangler
+  // profile is bound to this folder as well.
   "compatibility_date": "2026-08-18",
   "pages_build_output_dir": "./out",
 
