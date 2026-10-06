@@ -91,6 +91,18 @@ widgetRoutes.get("/snapshot", async (c) => {
   )[0];
   const awardWeeks =
     [52, 26, 12, 8, 4, 1].find((weeks) => streak >= weeks) ?? 0;
+  /*
+   * The promise ring is THIS week: full once it is kept, empty until then, and empty
+   * again when the next week starts. It used to be weeks-kept over the target — the
+   * goal ring's number drawn twice — so it never reset, and home said "Open" and kept
+   * offering "Keep this week" after the week was kept. The current week is the newest
+   * one that has started; a missed week stays empty rather than showing as kept.
+   */
+  const today = new Date().toISOString().slice(0, 10);
+  const currentWeek = promiseRows.find(
+    (row) => String(row.week_start) <= today,
+  );
+  const promiseKept = currentWeek?.completed_at ? 1 : 0;
   return c.json({
     snapshot: {
       title: String(activeGoal?.title ?? "Build your reserve"),
@@ -99,7 +111,7 @@ widgetRoutes.get("/snapshot", async (c) => {
           ? `${complete} promises kept`
           : "Your next promise is waiting",
       rings: {
-        consistency: Math.min(1, complete / target),
+        consistency: promiseKept,
         circle: Math.min(1, showedUp / members),
         goal: Math.min(1, complete / target),
       },

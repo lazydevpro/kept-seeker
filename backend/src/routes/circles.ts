@@ -182,6 +182,40 @@ circleRoutes.get("/:circleId", async (c) => {
   });
 });
 
+/** Rename a circle, or change its line of description. The owner's call alone. */
+circleRoutes.patch("/:circleId", async (c) => {
+  const circleId = c.req.param("circleId");
+  const body = await parseJson(
+    c,
+    z
+      .object({
+        name: z.string().trim().min(2).max(48).optional(),
+        description: z.string().trim().max(160).optional(),
+      })
+      .refine(
+        (value) => value.name !== undefined || value.description !== undefined,
+        {
+          message: "Nothing to change.",
+        },
+      ),
+  );
+  const me = await requireMember(c.env, circleId, c.get("userId"));
+  if (me.role !== "owner")
+    throw new ApiError(
+      403,
+      "Only the circle's owner can change it.",
+      "not_owner",
+    );
+  // COALESCE: a field left out keeps its value, same as PATCH /v1/me.
+  await c.env.DB.prepare(
+    "UPDATE circles SET name = COALESCE(?, name), description = COALESCE(?, description) WHERE id = ?",
+  )
+    .bind(body.name ?? null, body.description ?? null, circleId)
+    .run();
+  await broadcast(c.env, circleId, { type: "circle.updated" });
+  return c.json({ updated: true });
+});
+
 circleRoutes.post("/:circleId/invites", async (c) => {
   const circleId = c.req.param("circleId");
   await requireMember(c.env, circleId, c.get("userId"));

@@ -154,6 +154,19 @@ export function useCreateCircle() {
   })
 }
 
+/** Rename a circle. The server lets only its owner. */
+export function useUpdateCircle(circleId?: string) {
+  const client = useQueryClient()
+  return useMutation({
+    mutationFn: (input: { name?: string; description?: string }) =>
+      apiRequest(`/v1/circles/${circleId}`, { method: 'PATCH', body: JSON.stringify(input) }),
+    onSuccess: () => {
+      client.invalidateQueries({ queryKey: ['circles'] })
+      client.invalidateQueries({ queryKey: ['circle', circleId] })
+    },
+  })
+}
+
 export interface GoalSummary {
   id: string
   title: string

@@ -1141,6 +1141,39 @@ describe("Launch readiness", () => {
       }
     ).circles;
 
+  it("lets only the owner rename a circle, and keeps what was left out", async () => {
+    const owner = await signIn();
+    const member = await signIn();
+    const circleId = await makeCircle(owner);
+    expect((await join(member, await invite(owner, circleId))).status).toBe(
+      200,
+    );
+    const rename = (cookie: string, body: unknown) =>
+      call(cookie, `/v1/circles/${circleId}`, {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      });
+
+    expect((await rename(member, { name: "Mine now" })).status).toBe(403);
+    expect((await rename(owner, { name: "x" })).status).toBe(422);
+    expect((await rename(owner, {})).status).toBe(422);
+    expect(
+      (await rename(owner, { description: "One small promise a week." }))
+        .status,
+    ).toBe(200);
+    expect((await rename(owner, { name: "Sunday Savers" })).status).toBe(200);
+
+    const row = await env.DB.prepare(
+      "SELECT name, description FROM circles WHERE id = ?",
+    )
+      .bind(circleId)
+      .first();
+    expect(row).toEqual({
+      name: "Sunday Savers",
+      description: "One small promise a week.",
+    });
+  });
+
   it("lets a member leave, and only the owner remove someone", async () => {
     const owner = await signIn();
     const member = await signIn();
@@ -1299,6 +1332,100 @@ describe("Launch readiness", () => {
     } else {
       expect(outcome.retried).toBe(true);
     }
+  });
+
+  it("fills the promise ring for this week only, and the goal ring for the whole goal", async () => {
+    const cookie = await signIn();
+    const userId = (await whoAmI(cookie))!.profile.id;
+    const monday = (weeksAgo: number) => {
+      const date = new Date();
+      date.setUTCDate(
+        date.getUTCDate() - ((date.getUTCDay() + 6) % 7) - weeksAgo * 7,
+      );
+      return date.toISOString().slice(0, 10);
+    };
+    await env.DB.batch([
+      env.DB.prepare(
+        `INSERT INTO goals (id, user_id, title, target_type, target_value, visibility, status)
+         VALUES ('ring-goal', ?, 'Rings', 'weekly_consistency', 4, 'progress_only', 'active')`,
+      ).bind(userId),
+      // Last week kept; this week still open.
+      env.DB.prepare(
+        `INSERT INTO weekly_promises (id, goal_id, user_id, week_start, due_at, completed_at)
+         VALUES ('ring-last', 'ring-goal', ?, ?, datetime('now', '-2 days'), datetime('now', '-3 days'))`,
+      ).bind(userId, monday(1)),
+      env.DB.prepare(
+        `INSERT INTO weekly_promises (id, goal_id, user_id, week_start, due_at)
+         VALUES ('ring-this', 'ring-goal', ?, ?, datetime('now', '+2 days'))`,
+      ).bind(userId, monday(0)),
+    ]);
+    const rings = async () =>
+      (
+        (await (await call(cookie, "/v1/widget/snapshot")).json()) as {
+          snapshot: { rings: { consistency: number; goal: number } };
+        }
+      ).snapshot.rings;
+
+    expect(await rings()).toMatchObject({ consistency: 0, goal: 0.25 });
+    await env.DB.prepare(
+      "UPDATE weekly_promises SET completed_at = CURRENT_TIMESTAMP WHERE id = 'ring-this'",
+    ).run();
+    expect(await rings()).toMatchObject({ consistency: 1, goal: 0.5 });
+  });
+
+  it("settles a demo purchase on a local server and nowhere else", async () => {
+    const userId = "demo-buyer";
+    await env.DB.prepare(
+      `INSERT INTO "user" (id, name, email, emailVerified, createdAt, updatedAt)
+       VALUES (?, 'Demo', 'demo@local.test', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+    )
+      .bind(userId)
+      .run();
+    const wallet = bs58.encode(new Uint8Array(32).fill(9));
+    await env.DB.batch(
+      ["demo-local", "demo-prod"].map((contributionId) =>
+        env.DB.prepare(
+          `INSERT INTO contributions (id, user_id, wallet_address, signature, asset_mint, amount_base_units, asset_decimals, execution_mode, status)
+           VALUES (?, ?, ?, ?, 'mint', '32700000', 9, 'demo', 'pending')`,
+        ).bind(contributionId, userId, wallet, `demo-${contributionId}`),
+      ),
+    );
+    const verify = (contributionId: string, target: AppEnv) =>
+      processQueue(
+        {
+          queue: "test",
+          messages: [
+            {
+              id: contributionId,
+              timestamp: new Date(),
+              attempts: 1,
+              body: { kind: "verify_contribution", contributionId },
+              ack: () => undefined,
+              retry: () => undefined,
+            },
+          ],
+          ackAll() {},
+          retryAll() {},
+        } as unknown as MessageBatch<Job>,
+        target,
+      );
+    await verify("demo-local", env as unknown as AppEnv);
+    await verify("demo-prod", {
+      ...env,
+      ENVIRONMENT: "production",
+    } as unknown as AppEnv);
+
+    const rows = await env.DB.prepare(
+      "SELECT id, status, verified_amount_base_units FROM contributions WHERE id IN ('demo-local', 'demo-prod') ORDER BY id",
+    ).all<{ id: string; status: string; verified_amount_base_units: string }>();
+    expect(rows.results).toEqual([
+      {
+        id: "demo-local",
+        status: "verified",
+        verified_amount_base_units: "32700000",
+      },
+      { id: "demo-prod", status: "rejected", verified_amount_base_units: null },
+    ]);
   });
 
   it("only serves share cards for kept promises", async () => {

@@ -20,6 +20,7 @@ import {
   useMe,
   useShareInvite,
   useToggleReaction,
+  useUpdateCircle,
   type ReactionEmoji,
 } from '@/features/social/social-api'
 
@@ -56,9 +57,12 @@ export default function CircleScreen() {
   const toggleReaction = useToggleReaction(circleId)
   const nudge = useNudge(circleId)
   const remove = useRemoveFromCircle(circleId)
+  const update = useUpdateCircle(circleId)
 
   const [naming, setNaming] = useState(false)
   const [name, setName] = useState('')
+  const [managing, setManaging] = useState(false)
+  const [rename, setRename] = useState('')
 
   const myId = me.data?.profile.id
   const members = circle.data?.members ?? []
@@ -113,6 +117,131 @@ export default function CircleScreen() {
       onError: (error) => Alert.alert('Not removed', error instanceof Error ? error.message : 'Please try again.'),
     })
   }
+
+  const openManage = () => {
+    setRename(circle.data?.circle.name ?? '')
+    setManaging(true)
+  }
+
+  const renameValid = rename.trim().length >= 2 && rename.trim().length <= 48
+  const renamed = renameValid && rename.trim() !== circle.data?.circle.name
+
+  const saveName = async () => {
+    if (!renamed) return
+    try {
+      await update.mutateAsync({ name: rename.trim() })
+      setManaging(false)
+    } catch (error) {
+      Alert.alert('Not renamed', error instanceof Error ? error.message : 'Please try again.')
+    }
+  }
+
+  const leave = async () => {
+    if (!myId) return
+    // Members come back ordered by join date, so the next owner is the first one left.
+    const heir = members.find((member) => member.id !== myId)
+    const ok = await confirmAsync({
+      title: 'Leave this circle?',
+      message:
+        iOwn && heir
+          ? `${heir.displayName} becomes its owner. Your posts leave with you, and you can come back with a new invite.`
+          : iOwn
+            ? 'You are the last one here, so the circle closes.'
+            : 'Your posts leave with you. You can come back with a new invite.',
+      confirmLabel: 'Leave',
+      destructive: true,
+    })
+    if (!ok) return
+    remove.mutate(myId, {
+      onSuccess: () => {
+        setManaging(false)
+        setOpenId(null)
+      },
+      onError: (error) => Alert.alert('Could not leave', error instanceof Error ? error.message : 'Please try again.'),
+    })
+  }
+
+  /*
+   * Changing the circle lives here, not on the rows. The circle screen is for seeing
+   * who kept their week and cheering them on; a remove button on every friend's card
+   * read as the thing to do there.
+   */
+  const manageSheet = (
+    <Sheet
+      visible={managing}
+      onClose={() => setManaging(false)}
+      eyebrow="Your circle"
+      title="Manage circle"
+      footer={
+        iOwn ? (
+          <Button
+            label={update.isPending ? 'Saving…' : 'Save name'}
+            onPress={saveName}
+            disabled={!renamed || update.isPending}
+          />
+        ) : undefined
+      }
+    >
+      {iOwn ? (
+        <View style={styles.manageBlock}>
+          <T role="caption" color={colors.inkFaint}>
+            Name
+          </T>
+          <TextInput
+            value={rename}
+            onChangeText={setRename}
+            maxLength={48}
+            accessibilityLabel="Circle name"
+            style={[type.heading, styles.nameInput, { color: colors.ink }]}
+          />
+        </View>
+      ) : null}
+
+      <View style={styles.manageBlock}>
+        <T role="caption" color={colors.inkFaint}>
+          {members.length} {members.length === 1 ? 'person' : 'people'}
+        </T>
+        {members.map((member) => {
+          const isYou = member.id === myId
+          return (
+            <Row key={member.id} gap={space[3]} style={styles.manageRow}>
+              <View style={[styles.avatar, isYou && styles.avatarYou]}>
+                <T role="label" color={isYou ? colors.ink : colors.inkMuted}>
+                  {initials(member.displayName)}
+                </T>
+              </View>
+              <View style={styles.personCopy}>
+                <T role="label">{member.displayName}</T>
+                <T role="caption" color={colors.inkFaint}>
+                  {member.role === 'owner' ? 'Owner' : 'Member'}
+                  {isYou ? ' · You' : ''}
+                </T>
+              </View>
+              {/* Only the owner can remove someone, and never themselves — that is leaving. */}
+              {iOwn && !isYou ? (
+                <Button
+                  label="Remove"
+                  variant="secondary"
+                  onPress={() => void removeMember(member.id, member.displayName)}
+                  disabled={remove.isPending}
+                  style={styles.removeButton}
+                />
+              ) : null}
+            </Row>
+          )
+        })}
+      </View>
+
+      <Button
+        label="Leave circle"
+        icon="logOut"
+        variant="ghost"
+        tone="coral"
+        onPress={() => void leave()}
+        disabled={remove.isPending}
+      />
+    </Sheet>
+  )
 
   const nameSheet = (
     <Sheet
@@ -248,17 +377,6 @@ export default function CircleScreen() {
                       onPress={() => sendNudge(member.id, member.displayName)}
                     />
                   ) : null}
-                  {/* Only the owner can remove someone, and never themselves from
-                      here — leaving lives in Account, next to the other exits. */}
-                  {iOwn && !isYou ? (
-                    <IconButton
-                      name="close"
-                      label={`Remove ${member.displayName} from the circle`}
-                      on="card"
-                      disabled={remove.isPending}
-                      onPress={() => void removeMember(member.id, member.displayName)}
-                    />
-                  ) : null}
                   <RingGlyph
                     size={64}
                     promise={member.showedUp ? 1 : 0}
@@ -335,6 +453,8 @@ export default function CircleScreen() {
           disabled={shareInvite.isPending}
         />
 
+        <Button label="Manage circle" icon="people" variant="secondary" onPress={openManage} />
+
         <Button
           label="Start another circle"
           icon="personAdd"
@@ -344,6 +464,7 @@ export default function CircleScreen() {
         />
       </Screen>
       {nameSheet}
+      {manageSheet}
     </>
   )
 }
@@ -384,6 +505,9 @@ const useStyles = makeThemedStyles((colors) =>
     /** Your own cheer reads as pressed, so a second tap is obviously an undo. */
     reactionMine: { backgroundColor: colors.kiwiTint, borderWidth: 2, borderColor: colors.kiwi },
     quiet: { alignItems: 'center', gap: space[3], paddingVertical: space[5] },
+    manageBlock: { gap: space[3] },
+    manageRow: { alignItems: 'center' },
+    removeButton: { minHeight: 40, paddingHorizontal: space[4] },
     nameInput: {
       minHeight: 56,
       paddingHorizontal: space[4],
