@@ -64,6 +64,17 @@
   font-weight: 600;
 }
 
+/* The crypto rows share the public card: same live source, same row, a quiet label between. */
+.subhead {
+  margin: var(--space-5) 0 var(--space-1);
+  font-size: var(--text-caption-size);
+  line-height: var(--text-caption-height);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--ink-faint);
+}
+
 /* ─── Rows ──────────────────────────────────────────────────────────────────────────────── */
 
 .rows {

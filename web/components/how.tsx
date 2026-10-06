@@ -44,7 +44,7 @@ const STEPS: {
     tone: 'grape',
     step: 'Two',
     title: 'Buy the real thing',
-    body: 'Tokenised equities and private-market names, settled on Solana from your own wallet.',
+    body: 'Tokenised equities, crypto and private-market names, settled on Solana from your own wallet.',
     card: (
       <>
         <Chip label="Verified mint" tone="grape" />

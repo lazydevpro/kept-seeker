@@ -2,7 +2,16 @@
 
 import { useEffect, useId, useState } from 'react'
 import { Card, Chip } from '@/components/ui'
-import { CAPTURED_ON, EQUITIES, PRIVATE_MARKS, fetchQuotes, money, units, type Quote } from '@/lib/prices'
+import {
+  CAPTURED_ON,
+  LISTINGS,
+  MARKS_CAPTURED_ON,
+  PRIVATE_MARKS,
+  fetchQuotes,
+  money,
+  units,
+  type Quote,
+} from '@/lib/prices'
 import styles from './market.module.css'
 
 /**
@@ -17,9 +26,10 @@ import styles from './market.module.css'
  * The only thing the fetch changes is whether it says "live" or "as of 21 September".
  */
 
-const REST: Quote[] = EQUITIES.map((l) => ({
+const REST: Quote[] = LISTINGS.map((l) => ({
   symbol: l.symbol,
   name: l.name,
+  kind: l.kind,
   price: l.capturedPrice,
   change24h: null,
   stale: true,
@@ -30,15 +40,15 @@ const PRESETS = [10, 20, 50, 100]
 export function Market() {
   const [quotes, setQuotes] = useState<Quote[]>(REST)
   const [amount, setAmount] = useState(20)
-  const [pick, setPick] = useState(EQUITIES[0]!.symbol)
+  const [pick, setPick] = useState(LISTINGS[0]!.symbol)
   const inputId = useId()
   const assetId = useId()
 
   useEffect(() => {
     const controller = new AbortController()
     fetchQuotes(controller.signal).then(setQuotes)
-    // One fetch per visit. These are index and single-name equities, not a trading screen —
-    // polling would add load and change nothing the reader would notice.
+    // One fetch per visit. This is a shelf for a weekly habit, not a trading screen — polling
+    // would add load and change nothing the reader would notice.
     return () => controller.abort()
   }, [])
 
@@ -55,8 +65,8 @@ export function Market() {
             Real assets, <em className="serif">real chain.</em>
           </h2>
           <p className="lede">
-            Tokenised equities and private-market names, settled on Solana from a wallet only you hold the keys
-            to.
+            Tokenised equities, crypto and private-market names, settled on Solana from a wallet only you hold
+            the keys to.
           </p>
         </header>
 
@@ -68,21 +78,19 @@ export function Market() {
               <Chip label={live ? 'Live · Jupiter' : `As of ${CAPTURED_ON}`} tone={live ? 'kiwi' : 'neutral'} />
             </div>
             <ul className={styles.rows}>
-              {quotes.map((quote) => (
-                <li key={quote.symbol} className={styles.row}>
-                  <span className={styles.rowSymbol}>{quote.symbol}</span>
-                  <span className={styles.rowName}>{quote.name}</span>
-                  <span className={`${styles.rowPrice} numeric`}>${money(quote.price)}</span>
-                  <span
-                    className={`${styles.rowChange} numeric`}
-                    data-dir={quote.change24h === null ? 'flat' : quote.change24h >= 0 ? 'up' : 'down'}
-                  >
-                    {quote.change24h === null
-                      ? '—'
-                      : `${quote.change24h >= 0 ? '+' : ''}${quote.change24h.toFixed(2)}%`}
-                  </span>
-                </li>
-              ))}
+              {quotes
+                .filter((quote) => quote.kind === 'stock')
+                .map((quote) => (
+                  <Row key={quote.symbol} quote={quote} />
+                ))}
+            </ul>
+            <h4 className={styles.subhead}>Crypto</h4>
+            <ul className={styles.rows}>
+              {quotes
+                .filter((quote) => quote.kind === 'crypto')
+                .map((quote) => (
+                  <Row key={quote.symbol} quote={quote} />
+                ))}
             </ul>
           </Card>
 
@@ -186,11 +194,27 @@ export function Market() {
             </ul>
             <p className={styles.fine}>
               Loan participation rights in pre-IPO names, marked periodically rather than quoted continuously.
-              Held through Tessera, as of {CAPTURED_ON}.
+              Held through Tessera, as of {MARKS_CAPTURED_ON}.
             </p>
           </Card>
         </div>
       </div>
     </section>
+  )
+}
+
+function Row({ quote }: { quote: Quote }) {
+  return (
+    <li className={styles.row}>
+      <span className={styles.rowSymbol}>{quote.symbol}</span>
+      <span className={styles.rowName}>{quote.name}</span>
+      <span className={`${styles.rowPrice} numeric`}>${money(quote.price)}</span>
+      <span
+        className={`${styles.rowChange} numeric`}
+        data-dir={quote.change24h === null ? 'flat' : quote.change24h >= 0 ? 'up' : 'down'}
+      >
+        {quote.change24h === null ? '—' : `${quote.change24h >= 0 ? '+' : ''}${quote.change24h.toFixed(2)}%`}
+      </span>
+    </li>
   )
 }
