@@ -24,8 +24,14 @@ Sources: dApp Store Terms of Use, Publisher Policy, Developer Agreement, docs.so
       it). Review takes 3–5 business days; for Clock In it must be live by ~10 Dec #store
 - [ ] Optional: crash reporting; encrypt the MWA auth token (the wallet kit keeps it in
       AsyncStorage); a lawyer's review of /terms and /privacy #launch
-- [ ] Deck screenshots show the old shelf (private markets, no crypto): recapture with
-      `video/scripts/app-shots.mjs` #deck
+- [x] Deck screenshots recaptured from the crypto-first build (a SOL purchase, the crypto
+      statement); the script now waits out the opening animation and slow IPFS logos #deck
+- [ ] The cbBTC logo comes from a Pinata IPFS gateway that took 7 s to answer (9 Oct): on a
+      phone, Bitcoin shows a blank tile until it does. Host it on R2 like SKR's #markets
+- [ ] The 1% commission the deck promises: a Jupiter referral account, a referral token account
+      per fee mint, `referralAccount` + `referralFee=100` on `/swap/v2/order` (now `feeBps: 0`),
+      and a check that the order's `feeBps` came back as 100. Terms and the purchase sheet must say
+      it. Switch on with the store release #trade
 
 ## Now — Clock In submission (closes Fri 9 Oct, 12:29 IST) #clockin
 
@@ -54,7 +60,10 @@ Plan: [docs/plans/clock-in-submission.md](docs/plans/clock-in-submission.md). Ow
 - [ ] Device pass on a phone with $1 real money (the open #verify item below) #verify
 - [ ] v1.0.2 APK from the submitted commit, if the app changed since v1.0.1 #mobile
 - [ ] Demo video, 2:45: script and shot list in `docs/demo-video.md`; record Wed, assemble Thu #film
-- [ ] Deck pass against the four criteria; re-export `docs/kept-deck.pdf` #deck
+- [x] Pitch deck (9–10 Oct): cut to 12 slides, one idea each, about half the words. New:
+      market, competition, business model (1% commission on every buy, owner's call),
+      go-to-market. No team, traction or ask slides, by the owner's call; the tech appendix
+      left the deck (git history has it). Figures sourced on the slides; PDF re-exported #deck
 - [ ] Draft on Align, run the AI Coach, final submit #clockin
 - [ ] After a win: live on the Solana dApp Store by 10 Dec #launch
 - [x] Crypto shelf: SOL, cbBTC, SKR; SOL verified from lamports; 42 backend tests #clockin

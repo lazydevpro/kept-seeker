@@ -93,6 +93,13 @@ await send('Emulation.setTouchEmulationEnabled', { enabled: false })
 const go = async (url) => {
   await send('Page.navigate', { url })
   await sleep(1500)
+  // Every load opens with the pinky-promise animation over the screen (features/splash).
+  // Wait for its hands to leave, or a shot can catch the screen behind it, faded.
+  const until = Date.now() + 8000
+  while (Date.now() < until) {
+    if (!(await evaluate(`!!document.querySelector('path[d^="M139.543 3.49373"]')`))) return
+    await sleep(250)
+  }
 }
 
 const waitForText = async (text, timeout = 30000) => {
@@ -153,6 +160,16 @@ const typeInto = async (placeholder, text) => {
   await sleep(400)
 }
 
+/** Wait until every image on the screen has loaded — logos come from slow IPFS gateways. */
+const waitForImages = async (timeout = 30000) => {
+  const until = Date.now() + timeout
+  while (Date.now() < until) {
+    if (await evaluate(`[...document.images].every((img) => img.complete && img.naturalWidth > 0)`)) return
+    await sleep(400)
+  }
+  console.warn('  some images never loaded')
+}
+
 const shot = async (name, settle = 1200) => {
   await sleep(settle)
   const { data } = await send('Page.captureScreenshot', { format: 'jpeg', quality: 88 })
@@ -209,20 +226,21 @@ try {
   await go(`${APP}/invest`)
   await waitForText('Public markets')
   // The shelf is only worth photographing — and tapping — once live prices are on it.
-  await waitForPattern('SPYx[\\s\\S]{0,40}\\$\\d')
+  await waitForPattern('SOL[\\s\\S]{0,40}\\$\\d')
+  await waitForImages()
   await shot('invest', 1500)
 
-  // ── A purchase ───────────────────────────────────────────────────────────────────
-  await click('S&P 500')
+  // ── A purchase: crypto, which leads the shelf ────────────────────────────────────
+  await click('Solana', { exact: true })
   await waitForText('Past month')
   await shot('asset', 2500)
-  await click('Buy SPYx')
+  await click('Buy SOL')
   await waitForText('Connect wallet')
   await click('Connect wallet')
   await waitForText('Sign to verify wallet')
   await click('Sign to verify wallet')
-  await waitForText('I am not a U.S. person', 15000)
-  await click('I am not a U.S. person')
+  await waitForText('I do not live in', 15000)
+  await click('I do not live in')
   await waitForText('You receive')
   // The quote is live and the sheet asks once. If that first ask met a slow price feed,
   // stepping the amount away and back asks again.

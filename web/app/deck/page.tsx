@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import { Deck } from './deck'
 
 /**
- * The product deck: what KEPT is, how it works, how it is built and what comes next. No ask.
+ * The pitch deck, twelve slides, one idea each: the problem, the product, the market, the model
+ * and the way to it. No team, traction or ask slides yet; how it is built lives in the repo.
  *
  * Every screen in it is a photograph of the real app (video/scripts/app-shots.mjs) and
  * every ring is the real component, so the deck cannot show a product that does not

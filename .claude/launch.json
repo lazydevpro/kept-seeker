@@ -6,7 +6,7 @@
       "runtimeExecutable": "sh",
       "runtimeArgs": [
         "-c",
-        "EXPO_PUBLIC_SOLANA_CLUSTER=mainnet-beta npx expo start --web --port 8098 --clear"
+        "NODE_OPTIONS=--max-old-space-size=8192 EXPO_PUBLIC_SOLANA_CLUSTER=mainnet-beta npx expo start --web --port 8098"
       ],
       "cwd": "mobile",
       "port": 8098

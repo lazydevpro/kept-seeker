@@ -104,7 +104,7 @@
   letter-spacing: -0.01em;
 }
 
-.lead {
+.slide .lead {
   font-size: 34px;
   line-height: 1.42;
   color: var(--ink-muted);
@@ -166,7 +166,7 @@
   margin-top: 24px;
 }
 
-.threeUp > div {
+.threeUp > * {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -174,7 +174,6 @@
   border-top: 2px solid rgb(163 230 53 / 45%);
 }
 
-.steps,
 .bullets {
   margin: 0;
   padding: 0;
@@ -184,36 +183,11 @@
   gap: 22px;
 }
 
-.steps {
-  counter-reset: step;
-}
-
-.steps li {
-  counter-increment: step;
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-  font-size: 32px;
-  line-height: 1.35;
-}
-
-.steps li::before {
-  content: counter(step);
-  flex: none;
-  width: 48px;
-  height: 48px;
-  border-radius: 24px;
-  display: grid;
-  place-items: center;
-  background: var(--kiwi);
-  color: var(--ink);
-  font-size: 22px;
-  font-weight: 800;
-}
-
 .bullets li {
-  padding-left: 30px;
+  padding-left: 34px;
   position: relative;
+  font-size: 32px;
+  line-height: 1.4;
   color: var(--ink-muted);
 }
 
@@ -221,15 +195,14 @@
   content: '';
   position: absolute;
   left: 0;
-  top: 15px;
+  top: 19px;
   width: 12px;
   height: 12px;
   border-radius: 6px;
   background: var(--kiwi);
 }
 
-.bullets b,
-.steps b {
+.bullets b {
   color: var(--ink);
 }
 
@@ -237,33 +210,9 @@
   max-width: none;
 }
 
-.twoCol {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 90px;
-}
-
-.twoCol > div {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding-top: 28px;
-  border-top: 2px solid var(--hairline-strong);
-}
-
-.twoCol li {
-  font-size: 30px !important;
-}
-
 .small {
   font-size: 18px !important;
   color: var(--ink-faint);
-}
-
-.note {
-  font-size: 22px !important;
-  color: var(--ink-muted);
-  max-width: 900px;
 }
 
 /* ── The phone ───────────────────────────────────────────────────────────────────────── */
@@ -356,29 +305,6 @@
   color: rgb(251 251 244 / 45%) !important;
 }
 
-.ringRow {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px;
-}
-
-.ringCard {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 18px;
-  padding: 44px 40px;
-  border-radius: 36px;
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-}
-
-.ringCard p {
-  font-size: 23px !important;
-  color: var(--ink-muted);
-}
-
 .loop {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -394,7 +320,7 @@
 }
 
 .loop p {
-  font-size: 24px !important;
+  font-size: 28px !important;
   color: var(--ink-muted);
 }
 
@@ -415,63 +341,8 @@
 }
 
 .seeGrid p {
+  font-size: 30px !important;
   color: var(--ink-muted);
-}
-
-.flow {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 14px;
-}
-
-.flow span {
-  font-size: 22px;
-  font-weight: 600;
-}
-
-.flow span:nth-child(odd) {
-  padding: 14px 24px;
-  border-radius: 999px;
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-}
-
-.flow span:nth-child(even) {
-  color: var(--kiwi-deep);
-  font-weight: 800;
-}
-
-.beforeAfter {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 72px;
-}
-
-.beforeAfter > div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 22px;
-}
-
-.beforeAfter p {
-  font-size: 24px !important;
-  color: var(--ink-muted);
-}
-
-.arrow {
-  font-size: 90px;
-  font-weight: 800;
-  color: var(--kiwi-deep);
-}
-
-.stack {
-  margin-top: 16px !important;
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: 20px !important;
-  color: rgb(251 251 244 / 45%) !important;
 }
 
 .close {
@@ -506,338 +377,6 @@
   font-size: 24px !important;
 }
 
-/* ── Under the hood ──────────────────────────────────────────────────────────────────── */
-
-.tech {
-  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  padding-top: 84px;
-  padding-bottom: 84px;
-  gap: 38px;
-}
-
-/* The architecture: phone ⟷ KEPT on Cloudflare ⟷ Solana and partners. */
-
-.arch {
-  display: grid;
-  grid-template-columns: 1fr 116px 1.18fr 116px 1fr;
-}
-
-.archCol {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-top: 22px;
-}
-
-.archHead {
-  margin-bottom: 4px !important;
-  font-size: 17px !important;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-}
-
-.box {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 5px;
-  padding: 14px 22px;
-  border-radius: 20px;
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-}
-
-.box h3 {
-  font-size: 22px !important;
-}
-
-.box p {
-  font-size: 17.5px !important;
-  line-height: 1.4 !important;
-  color: var(--ink-muted);
-}
-
-.archCore {
-  padding: 22px;
-  border-radius: 30px;
-  background: var(--surface-inverse);
-}
-
-.archCore .archHead {
-  color: var(--kiwi);
-}
-
-.archCore .box {
-  background: rgb(251 251 244 / 7%);
-  box-shadow: none;
-}
-
-.archCore .box h3 {
-  color: var(--ink-inverse);
-}
-
-.archCore .box p {
-  color: rgb(251 251 244 / 66%);
-}
-
-.archLink {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.archLink svg {
-  fill: var(--kiwi-deep);
-  stroke: var(--kiwi-deep);
-}
-
-.archLink span {
-  font-size: 12.5px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-muted);
-}
-
-/* One purchase, left to right. */
-
-.purchase {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 22px;
-}
-
-.step {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 22px 20px 20px;
-  border-radius: 24px;
-  background: var(--surface);
-  box-shadow: var(--shadow-card);
-}
-
-/* The chevron in the gap between one step and the next. */
-.step:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  right: -16px;
-  top: 50%;
-  width: 9px;
-  height: 9px;
-  border-top: 3px solid var(--kiwi-deep);
-  border-right: 3px solid var(--kiwi-deep);
-  transform: translateY(-50%) rotate(45deg);
-}
-
-.stepTop {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.stepNo {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  display: grid;
-  place-items: center;
-  background: var(--kiwi);
-  color: var(--ink);
-  font-size: 19px;
-  font-weight: 800;
-}
-
-.lane {
-  padding: 5px 11px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.lanePhone {
-  box-shadow: inset 0 0 0 1.5px var(--hairline-strong);
-  color: var(--ink-muted);
-}
-
-.laneWorker {
-  background: var(--surface-inverse);
-  color: var(--ink-inverse);
-}
-
-.laneChain {
-  background: var(--kiwi-tint);
-  color: var(--kiwi-deep);
-}
-
-/* Coral is the circle's colour everywhere in KEPT, and this step is the circle. */
-.laneCircle {
-  background: var(--coral-tint);
-  color: var(--coral-deep);
-}
-
-.step h3 {
-  font-size: 26px !important;
-}
-
-.step p {
-  flex: 1;
-  font-size: 18.5px !important;
-  line-height: 1.45 !important;
-  color: var(--ink-muted);
-}
-
-.step code {
-  padding: 8px 10px;
-  border-radius: 10px;
-  background: var(--surface-sunken);
-  font-family: var(--mono);
-  font-size: 14px;
-  line-height: 1.35;
-  color: var(--ink);
-}
-
-.safety {
-  display: grid;
-  grid-template-columns: 250px 1fr 1fr 1fr;
-  gap: 36px;
-  align-items: center;
-  padding: 26px 34px;
-  border-radius: 24px;
-  background: var(--surface-sunken);
-}
-
-.safety h3 {
-  font-size: 26px !important;
-}
-
-.safety p {
-  font-size: 20px !important;
-  line-height: 1.4 !important;
-  color: var(--ink-muted);
-}
-
-/* Privacy, as the API sends it. */
-
-.onInk li {
-  font-size: 24px !important;
-  color: rgb(251 251 244 / 72%);
-}
-
-.onInk b {
-  color: var(--ink-inverse);
-}
-
-.codeStack {
-  display: flex;
-  flex-direction: column;
-  gap: 26px;
-}
-
-.code {
-  margin: 0;
-  border-radius: 24px;
-  overflow: hidden;
-  background: rgb(251 251 244 / 6%);
-  box-shadow: inset 0 0 0 1px rgb(251 251 244 / 12%);
-}
-
-.code figcaption {
-  padding: 16px 26px;
-  font-family: var(--font-inter), system-ui, sans-serif;
-  font-size: 17px;
-  font-weight: 600;
-  color: rgb(251 251 244 / 62%);
-  box-shadow: inset 0 -1px 0 rgb(251 251 244 / 12%);
-}
-
-.code pre {
-  margin: 0;
-  padding: 20px 26px 22px;
-  font-family: var(--mono);
-  font-size: 21px;
-  line-height: 1.55;
-  color: var(--kiwi);
-  white-space: pre;
-}
-
-.codeKey {
-  color: rgb(251 251 244 / 58%);
-}
-
-/* The message a wallet is asked to sign, verbatim. */
-
-.signCard {
-  margin: 0;
-  width: 680px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-  padding: 34px 38px;
-  border-radius: 36px;
-  background: var(--surface);
-  box-shadow: var(--shadow-lifted);
-}
-
-.signCard figcaption {
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--kiwi-deep);
-}
-
-.signCard pre {
-  margin: 0;
-  padding: 26px 28px;
-  border-radius: 20px;
-  background: var(--surface-sunken);
-  font-family: var(--mono);
-  font-size: 18.5px;
-  line-height: 1.5;
-  color: var(--ink);
-  white-space: pre;
-}
-
-.signCard p {
-  font-size: 19px !important;
-  color: var(--ink-muted);
-}
-
-/* Reliability: six claims, two rows. */
-
-.sixUp {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 40px 56px;
-}
-
-.sixUp > div {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding-top: 24px;
-  border-top: 2px solid rgb(163 230 53 / 45%);
-}
-
-.sixUp p {
-  font-size: 23px !important;
-}
-
 /* The roadmap. */
 
 .roadmap {
@@ -854,6 +393,11 @@
   border-top: 2px solid var(--hairline-strong);
 }
 
+.roadmap h3 {
+  font-size: 40px;
+  line-height: 1.25;
+}
+
 /* Now is what is happening, so it alone takes the brand's line. */
 .roadmap > div:first-child {
   border-top-color: var(--kiwi);
@@ -867,8 +411,236 @@
   color: var(--kiwi-deep);
 }
 
-.roadmap li {
-  font-size: 23px !important;
+/* ── The pitch: market, competition, the model ────────────────────────────────────── */
+
+/* The insight's three rings, named. */
+.legend {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.legend li {
+  font-size: 26px;
+  color: var(--ink-muted);
+}
+
+.legend b {
+  display: inline-block;
+  width: 130px;
+}
+
+.source {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 17px !important;
+  line-height: 1.4 !important;
+  color: var(--ink-faint);
+}
+
+/* Market: three tiers, each a number. */
+.tiers {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tiers li {
+  display: grid;
+  grid-template-columns: 100px 300px 1fr;
+  align-items: baseline;
+  gap: 20px;
+  padding: 22px 0;
+  border-top: 2px solid var(--hairline-strong);
+}
+
+.tiers li:first-child {
+  border-top-color: var(--kiwi);
+}
+
+.tiers p {
+  font-size: 28px !important;
+  color: var(--ink-muted);
+}
+
+.tiers b {
+  color: var(--ink);
+}
+
+.tiers .when {
+  font-size: 18px !important;
+  color: var(--kiwi-deep);
+}
+
+.tiers .tierStat {
+  font-size: 64px !important;
+  line-height: 1 !important;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink) !important;
+}
+
+.nest {
+  width: 620px;
+  height: 620px;
+}
+
+.nest text {
+  font-family: var(--font-sora), system-ui, sans-serif;
+  font-size: 30px;
+  font-weight: 700;
+  fill: var(--ink);
+}
+
+.nestOuter {
+  fill: var(--coral-tint);
+}
+
+.nestMid {
+  fill: var(--grape-tint);
+}
+
+.nestInner {
+  fill: var(--kiwi);
+}
+
+/* Competition: a two-by-two, with KEPT alone in its corner. */
+.compete {
+  display: grid;
+  grid-template-columns: 900px 1fr;
+  gap: 90px;
+  align-items: center;
+}
+
+.map {
+  display: grid;
+  grid-template-columns: 44px 1fr 1fr;
+  grid-template-rows: 250px 250px 40px;
+  gap: 14px;
+}
+
+.mapY,
+.mapX {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.mapY {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.mapX {
+  grid-column: 2 / 4;
+  grid-row: 3;
+  align-items: center;
+}
+
+.mapCell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px 32px;
+  border-radius: 28px;
+  background: var(--surface-sunken);
+}
+
+.mapCell b {
+  font-size: 25px;
+  font-weight: 600;
+  color: var(--ink-muted);
+}
+
+.mapKept {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 26px;
+  background: var(--surface-inverse);
+}
+
+.mapKept b {
+  font-size: 52px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--ink-inverse);
+}
+
+/* The business model, for one person. */
+.sum {
+  margin: 0;
+  width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px 44px;
+  border-radius: 36px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lifted);
+}
+
+.sum figcaption {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--kiwi-deep);
+}
+
+.sum dl {
+  margin: 0;
+}
+
+.sum dl > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--hairline-strong);
+}
+
+.sum dt {
+  font-size: 26px;
+  line-height: 1.35;
+  color: var(--ink-muted);
+}
+
+.sum dd {
+  margin: 0;
+  font-size: 48px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.sum dl > .sumTotal {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  border-bottom: none;
+}
+
+.sumTotal dd {
+  font-size: 72px;
+  color: var(--kiwi-deep);
+}
+
+.sum p {
+  font-size: 18px !important;
+  color: var(--ink-faint);
 }
 
 /* ── Print: every slide, one per page ────────────────────────────────────────────────── */
